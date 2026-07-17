@@ -15,6 +15,25 @@ const heroImages = [
 
 export default function Hero() {
   const [currentImage, setCurrentImage] = useState(0);
+  const [heroData, setHeroData] = useState({
+    title: 'Krishna Publicity',
+    subtitle: 'Elevate your market presence with premium outdoor advertising and immersive digital campaigns crafted for impact.'
+  });
+
+  useEffect(() => {
+    const fetchHeroData = async () => {
+      try {
+        const res = await fetch('http://localhost:5000/api/home');
+        const data = await res.json();
+        if (data && data.hero) {
+          setHeroData(data.hero);
+        }
+      } catch (error) {
+        console.error('Error fetching home data:', error);
+      }
+    };
+    fetchHeroData();
+  }, []);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -72,8 +91,13 @@ export default function Hero() {
             transition={{ duration: 1, delay: 0.4, ease: "easeOut" }}
             className="font-serif text-[3.5rem] sm:text-[4.5rem] md:text-[5rem] lg:text-[6rem] leading-[1] text-white font-normal"
           >
-            Krishna<br />
-            Publicity
+            {heroData.title.split(' ').map((word, i, arr) => (
+              <React.Fragment key={i}>
+                {word}
+                {i === 0 && arr.length > 1 && <br />}
+                {i > 0 && ' '}
+              </React.Fragment>
+            ))}
           </motion.h1>
 
           <motion.p
@@ -82,7 +106,7 @@ export default function Hero() {
             transition={{ duration: 1, delay: 0.6, ease: "easeOut" }}
             className="mt-8 text-base md:text-lg text-white/80 font-medium max-w-lg leading-relaxed"
           >
-            Elevate your market presence with premium outdoor advertising and immersive digital campaigns crafted for impact.
+            {heroData.subtitle}
           </motion.p>
 
           <motion.div

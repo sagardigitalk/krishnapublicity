@@ -1,19 +1,20 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Users, CheckCircle, Award, ChevronLeft, ChevronRight, Zap, Target } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 
-const stats = [
+// Default static fallbacks
+const defaultStats = [
   { icon: Users, value: "10+", label: "Years of Excellence" },
   { icon: CheckCircle, value: "5000+", label: "Clients Served" },
   { icon: Award, value: "3600+", label: "Successful Campaigns" },
   { icon: Zap, value: "98%", label: "Client Satisfaction" },
 ];
 
-const teamMembers = [
+const defaultTeamMembers = [
   {
     name: "Mr. Sanjay Ahir & Vivek Ahir",
     role: "Founding Partners",
@@ -36,6 +37,29 @@ const teamMembers = [
 
 export default function About() {
   const [currentMember, setCurrentMember] = useState(0);
+  const [aboutData, setAboutData] = useState({
+    title: 'Where Creativity Meets Measurable Impact.',
+    description: 'Krishna Publicity isn’t just an advertising agency. We are architects of brand experiences, meticulously designing campaigns that resonate and convert.'
+  });
+  const [teamMembers, setTeamMembers] = useState(defaultTeamMembers);
+  const [stats, setStats] = useState(defaultStats); // Keeping this static or fetch from home api if needed
+
+  useEffect(() => {
+    const fetchAboutData = async () => {
+      try {
+        const res = await fetch('http://localhost:5000/api/about');
+        const data = await res.json();
+        if (data) {
+          if (data.title) setAboutData(prev => ({ ...prev, title: data.title }));
+          if (data.description) setAboutData(prev => ({ ...prev, description: data.description }));
+          if (data.team && data.team.length > 0) setTeamMembers(data.team);
+        }
+      } catch (error) {
+        console.error('Error fetching about data:', error);
+      }
+    };
+    fetchAboutData();
+  }, []);
 
   const nextMember = () => setCurrentMember((prev) => (prev + 1) % teamMembers.length);
   const prevMember = () => setCurrentMember((prev) => (prev - 1 + teamMembers.length) % teamMembers.length);
@@ -60,10 +84,12 @@ export default function About() {
             viewport={{ once: true }}
             className="font-serif text-3xl md:text-4xl lg:text-5xl font-extrabold text-theme-navy tracking-tighter leading-tight"
           >
-            Where Creativity Meets <br/>
-            <span className="text-theme-navy">
-              Measurable Impact.
-            </span>
+            {aboutData.title.split('Meets').map((part, i, arr) => (
+              <React.Fragment key={i}>
+                {part}{i === 0 && arr.length > 1 && 'Meets '}
+                {i === 0 && arr.length > 1 && <br />}
+              </React.Fragment>
+            ))}
           </motion.h2>
         </div>
 
@@ -79,10 +105,7 @@ export default function About() {
               className="space-y-6"
             >
               <p className="text-xl md:text-2xl text-theme-navy/80 font-light leading-relaxed">
-                Krishna Publicity isn’t just an advertising agency. We are architects of brand experiences, meticulously designing campaigns that resonate and convert.
-              </p>
-              <p className="text-lg text-theme-navy/60 font-light leading-relaxed">
-                With a deep understanding of market dynamics in Gujarat and beyond, we seamlessly blend traditional outdoor majesty with cutting-edge digital precision.
+                {aboutData.description}
               </p>
             </motion.div>
 
@@ -125,36 +148,42 @@ export default function About() {
                 transition={{ duration: 0.6 }}
                 className="absolute inset-0"
               >
-                <Image 
-                  src={teamMembers[currentMember].image} 
-                  alt={teamMembers[currentMember].name} 
-                  fill 
-                  className="object-cover transition-transform duration-700 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#1B2642]/90 via-[#1B2642]/40 to-transparent" />
+                {teamMembers.length > 0 && (
+                  <>
+                    <Image 
+                      src={teamMembers[currentMember].image || '/placeholder.jpg'} 
+                      alt={teamMembers[currentMember].name} 
+                      fill 
+                      className="object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#1B2642]/90 via-[#1B2642]/40 to-transparent" />
+                  </>
+                )}
               </motion.div>
             </AnimatePresence>
 
             <div className="absolute inset-0 p-10 flex flex-col justify-end">
               <AnimatePresence mode="wait">
-                <motion.div
-                  key={currentMember}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  transition={{ duration: 0.4, delay: 0.2 }}
-                  className="space-y-4"
-                >
-                  <div className="inline-block px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white text-[10px] font-bold uppercase tracking-[0.2em]">
-                    {teamMembers[currentMember].role}
-                  </div>
-                  <h3 className="text-3xl font-bold text-white">
-                    {teamMembers[currentMember].name}
-                  </h3>
-                  <p className="text-base text-white/80 font-light max-w-md leading-relaxed">
-                    &quot;{teamMembers[currentMember].bio}&quot;
-                  </p>
-                </motion.div>
+                {teamMembers.length > 0 && (
+                  <motion.div
+                    key={currentMember}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    transition={{ duration: 0.4, delay: 0.2 }}
+                    className="space-y-4"
+                  >
+                    <div className="inline-block px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white text-[10px] font-bold uppercase tracking-[0.2em]">
+                      {teamMembers[currentMember].role}
+                    </div>
+                    <h3 className="text-3xl font-bold text-white">
+                      {teamMembers[currentMember].name}
+                    </h3>
+                    <p className="text-base text-white/80 font-light max-w-md leading-relaxed">
+                      &quot;{teamMembers[currentMember].bio}&quot;
+                    </p>
+                  </motion.div>
+                )}
               </AnimatePresence>
 
               <div className="flex items-center space-x-4 mt-8">

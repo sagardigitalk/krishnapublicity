@@ -9,6 +9,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import "./globals.css";
 import { useEffect } from "react";
+import { usePathname } from 'next/navigation';
 import Lenis from "lenis";
 
 const plusJakarta = Plus_Jakarta_Sans({ 
@@ -26,7 +27,15 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const pathname = usePathname();
+
   useEffect(() => {
+    // Disable Lenis smooth scrolling completely on the admin panel 
+    // because admin panels use fixed layouts with internal scrolling.
+    if (pathname && pathname.startsWith('/admin')) {
+      return;
+    }
+
     const lenis = new Lenis({
       duration: 1.5,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
@@ -47,7 +56,7 @@ export default function RootLayout({
     return () => {
       lenis.destroy()
     }
-  }, [])
+  }, [pathname])
 
   return (
     <html lang="en" className={`${plusJakarta.variable} ${playfairDisplay.variable}`}>
