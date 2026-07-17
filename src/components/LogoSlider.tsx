@@ -1,9 +1,10 @@
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
-const logos = [
+const defaultLogos = [
     { src: "/logos/logo1.png", alt: "Company 1" },
     { src: "/logos/logo2.png", alt: "Company 2" },
     { src: "/logos/logo3.png", alt: "Company 3" },
@@ -20,6 +21,27 @@ const logos = [
 ];
 
 export default function LogoSlider() {
+    const [logos, setLogos] = useState(defaultLogos);
+
+    useEffect(() => {
+        const fetchPartners = async () => {
+            try {
+                const res = await fetch('http://localhost:5000/api/home');
+                const data = await res.json();
+                if (data && data.partners && data.partners.length > 0) {
+                    const mappedLogos = data.partners.map((p: any) => ({
+                        src: p.image,
+                        alt: p.name || 'Partner Logo'
+                    }));
+                    setLogos(mappedLogos);
+                }
+            } catch (error) {
+                console.error("Error fetching partners:", error);
+            }
+        };
+        fetchPartners();
+    }, []);
+
     const settings = {
         dots: false,
         infinite: true,

@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
-import { LayoutDashboard, Home as HomeIcon, Info, LogOut, Menu, X } from 'lucide-react';
+import { LayoutDashboard, Home as HomeIcon, Info, LogOut, Menu, X, Users } from 'lucide-react';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -48,6 +48,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
     { name: 'Home Page', href: '/admin/home', icon: HomeIcon },
     { name: 'About Page', href: '/admin/about', icon: Info },
+    { name: 'Partners', href: '/admin/partners', icon: Users },
   ];
 
   return (

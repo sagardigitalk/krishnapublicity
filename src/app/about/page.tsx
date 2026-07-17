@@ -53,6 +53,19 @@ export default function About() {
           if (data.title) setAboutData(prev => ({ ...prev, title: data.title }));
           if (data.description) setAboutData(prev => ({ ...prev, description: data.description }));
           if (data.team && data.team.length > 0) setTeamMembers(data.team);
+          if (data.stats && data.stats.length > 0) {
+             // Map icons by string if necessary, but here we can just use the backend data
+             // To properly render Lucide icons dynamically from strings, we might need a small mapping.
+             // For simplicity, we just keep the data structure compatible.
+             const parsedStats = data.stats.map((s: any) => ({
+               icon: s.icon === 'check' ? CheckCircle : 
+                     s.icon === 'award' ? Award : 
+                     s.icon === 'zap' ? Zap : Users, 
+               value: s.value,
+               label: s.label
+             }));
+             setStats(parsedStats);
+          }
         }
       } catch (error) {
         console.error('Error fetching about data:', error);

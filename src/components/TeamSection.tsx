@@ -5,25 +5,25 @@ import Image from "next/image";
 
 import { motion } from "framer-motion";
 
-const teamMembers = [
-  {
-    name: "Mr. Sanjay Ahir",
-    role: "Founder",
-    image: "/main1.jpg",
-  },
-  {
-    name: "Mr. Umesh Zinzala",
-    role: "Managing Director",
-    image: "/main2.jpg",
-  },
-  {
-    name: "Harshad Ahir",
-    role: "Chief Marketing Officer",
-    image: "/main3.jpg",
-  }
-];
+import { useState, useEffect } from "react";
 
 export default function TeamSection() {
+  const [teamMembers, setTeamMembers] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchTeam = async () => {
+      try {
+        const res = await fetch('http://localhost:5000/api/about');
+        const data = await res.json();
+        if (data && data.team) {
+          setTeamMembers(data.team);
+        }
+      } catch (error) {
+        console.error('Error fetching team data:', error);
+      }
+    };
+    fetchTeam();
+  }, []);
   return (
     <section className="py-24 bg-white font-sans overflow-hidden">
       <div className="container max-w-7xl px-6 mx-auto">
