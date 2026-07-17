@@ -8,7 +8,13 @@ import { ArrowRight } from "lucide-react";
 const Footer = () => {
   return (
     <footer className="relative bg-[#1D2A44] text-white pt-8 pb-4 px-6 md:px-12 lg:px-20 overflow-hidden font-sans">
-      <div className="max-w-[1400px] mx-auto">
+      <motion.div 
+        className="max-w-[1400px] mx-auto"
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.8 }}
+      >
         {/* Top Section */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-6 mb-8">
           
@@ -108,7 +114,7 @@ const Footer = () => {
             <span>CRAFTED & DESIGNED BY KRISHNA</span>
           </div>
         </div>
-      </div>
+      </motion.div>
     </footer>
   );
 };

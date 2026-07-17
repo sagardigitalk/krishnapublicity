@@ -129,7 +129,7 @@ export default function HoardingsPage() {
                           src={city.image}
                           alt={city.name}
                           fill
-                          className="object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+                          className="object-contain transition-transform duration-700 ease-out group-hover:scale-110"
                         />
                         
                         <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/20 to-transparent opacity-80 group-hover:opacity-90 transition-opacity duration-500" />
