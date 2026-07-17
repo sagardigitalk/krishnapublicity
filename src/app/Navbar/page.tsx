@@ -1,0 +1,178 @@
+"use client"
+
+import { useState, useEffect } from "react"
+import { Link as ScrollLink } from "react-scroll"
+import { motion, AnimatePresence } from "framer-motion"
+import { Menu, X } from "lucide-react"
+
+const navItems = [
+  { section: "home", label: "Home" },
+  { section: "about", label: "About" },
+  { section: "services", label: "Services" },
+  { section: "gallery", label: "Gallery" },
+  { section: "contact", label: "Contact" },
+]
+
+export default function Navbar() {
+  const [isOpen, setIsOpen] = useState(false)
+  const [activeSection, setActiveSection] = useState("home")
+  const [scrolled, setScrolled] = useState(false)
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20)
+      const windowHeight = window.innerHeight
+      navItems.forEach(({ section }) => {
+        const element = document.getElementById(section)
+        if (element) {
+          const rect = element.getBoundingClientRect()
+          if (rect.top <= windowHeight / 2 && rect.bottom >= windowHeight / 2) {
+            setActiveSection(section)
+          }
+        }
+      })
+    }
+
+    window.addEventListener("scroll", handleScroll, { passive: true })
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [])
+
+  if (!mounted) return null
+
+  return (
+    <header className="fixed top-0 left-0 right-0 z-50 flex flex-col">
+      {/* Top promotional bar */}
+      <div className="bg-theme-navy text-white text-[10px] md:text-xs font-semibold tracking-[0.2em] uppercase py-2 flex justify-center items-center text-center px-4">
+        Premium Outdoor Advertising — Contact us today for exclusive rates
+      </div>
+
+      <nav
+        className={`w-full transition-all duration-500 ${
+          scrolled ? "bg-theme-cream shadow-md py-3" : "bg-black/20 backdrop-blur-md py-4 md:py-6"
+        }`}
+      >
+        <div className="w-full px-6 lg:px-16">
+          <div className="flex justify-between items-center relative">
+            
+            {/* Logo */}
+            <motion.div whileHover={{ scale: 1.02 }} className="flex items-center cursor-pointer z-10">
+              <ScrollLink to="home" smooth={true} duration={800}>
+                 <span className={`font-extrabold text-2xl md:text-3xl tracking-tighter flex items-center gap-1 transition-colors duration-500 ${scrolled ? 'text-theme-navy' : 'text-white'}`}>
+                   {/* Optional abstract logo shape */}
+                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className={`mr-1 transition-colors duration-500 ${scrolled ? 'text-theme-navy' : 'text-white'}`}>
+                      <path d="M6 3V21M6 12C6 12 10 10 14 10C18 10 20 12 20 16C20 20 18 22 14 22C10 22 6 20 6 20" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                   </svg>
+                   KRISHNA.
+                 </span>
+              </ScrollLink>
+            </motion.div>
+
+            {/* Desktop Navigation Links */}
+            <div className="hidden md:flex items-center justify-center absolute left-0 right-0 pointer-events-none">
+              <div className="flex space-x-6 lg:space-x-10 pointer-events-auto">
+                {navItems.map(({ section, label }) => (
+                  <ScrollLink
+                    key={section}
+                    to={section}
+                    smooth={true}
+                    duration={800}
+                    className="relative cursor-pointer group py-1"
+                  >
+                    <span className={`relative z-10 text-xs font-bold tracking-widest uppercase transition-colors duration-500 ${
+                      activeSection === section 
+                        ? (scrolled ? "text-theme-navy" : "text-white") 
+                        : (scrolled ? "text-theme-navy/60 group-hover:text-theme-navy" : "text-white/70 group-hover:text-white")
+                    }`}>
+                      {label}
+                    </span>
+                    {activeSection === section && (
+                      <motion.div
+                        layoutId="navUnderline"
+                        className={`absolute bottom-0 left-0 right-0 h-[2px] ${scrolled ? 'bg-theme-navy' : 'bg-white'}`}
+                        transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                      />
+                    )}
+                  </ScrollLink>
+                ))}
+              </div>
+            </div>
+            
+            {/* Desktop Right Action Area */}
+            <div className="hidden md:flex items-center space-x-6 z-10">
+              <a href="tel:+917878161516" className={`group flex items-center justify-center space-x-2 text-xs font-bold uppercase tracking-widest border px-8 py-3 rounded-full transition-all duration-500 ${
+                scrolled 
+                  ? "border-theme-navy/20 bg-transparent text-theme-navy hover:bg-theme-navy hover:text-white"
+                  : "border-white/30 bg-white/10 backdrop-blur-md text-white hover:bg-white hover:text-theme-navy"
+              }`}>
+                <span>Let&apos;s Talk</span>
+              </a>
+            </div>
+
+            {/* Mobile Menu Button */}
+            <div className="md:hidden flex items-center z-10">
+              <button
+                onClick={() => setIsOpen(!isOpen)}
+                className={`p-2 rounded-full transition-colors duration-500 ${
+                  scrolled ? "text-theme-navy hover:bg-theme-navy/5" : "text-white hover:bg-white/10"
+                }`}
+              >
+                <AnimatePresence mode="wait">
+                  {isOpen ? (
+                    <motion.div key="close" initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }}>
+                      <X className="w-6 h-6" />
+                    </motion.div>
+                  ) : (
+                    <motion.div key="menu" initial={{ rotate: 90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: -90, opacity: 0 }}>
+                      <Menu className="w-6 h-6" />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </button>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      {/* Mobile Navigation Dropdown */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+            className="md:hidden bg-theme-cream border-t border-theme-navy/10 overflow-hidden shadow-xl"
+          >
+            <div className="flex flex-col py-4 px-6 space-y-4">
+              {navItems.map(({ section, label }) => (
+                <ScrollLink
+                  key={section}
+                  to={section}
+                  smooth={true}
+                  duration={800}
+                  className={`block py-2 text-sm font-bold tracking-widest uppercase transition-all ${
+                    activeSection === section ? "text-theme-navy translate-x-2" : "text-theme-navy/60 hover:text-theme-navy hover:translate-x-2"
+                  }`}
+                  onClick={() => {
+                    setIsOpen(false)
+                    setActiveSection(section)
+                  }}
+                >
+                  {label}
+                </ScrollLink>
+              ))}
+              <div className="pt-4 mt-2 border-t border-theme-navy/10">
+                <a href="tel:+917878161516" className="flex items-center justify-center w-full space-x-2 text-xs font-bold uppercase tracking-widest border border-theme-navy text-theme-navy px-8 py-3 rounded-full hover:bg-theme-navy hover:text-white transition-all duration-300">
+                  <span>Let&apos;s Talk</span>
+                </a>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </header>
+  )
+}
+
