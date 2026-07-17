@@ -3,7 +3,6 @@
 import React from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { Button } from "@/components/ui/button"; // Assuming they have a shadcn Button, if not I'll use a normal HTML button
 import { ArrowRight } from "lucide-react";
 
 export default function FeatureSection() {
