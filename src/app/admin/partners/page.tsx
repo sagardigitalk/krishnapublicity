@@ -99,9 +99,9 @@ export default function AdminPartners() {
         </button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="max-w-5xl space-y-6">
         {/* Main Form Area */}
-        <div className="lg:col-span-2 space-y-6">
+        <div className="space-y-6">
           <div className="bg-white p-8 rounded-3xl shadow-[0_4px_24px_rgba(27,38,66,0.04)] border border-gray-100/50">
             <div className="flex justify-between items-center mb-8 pb-6 border-b border-gray-50">
               <div className="flex items-center gap-4">
@@ -165,19 +165,6 @@ export default function AdminPartners() {
                 {saving ? 'Saving...' : 'Save Changes'}
               </button>
             </div>
-          </div>
-        </div>
-
-        {/* Sidebar Info Blocks */}
-        <div className="space-y-6">
-          <div className="bg-[#1B2642] p-8 rounded-3xl text-white shadow-xl">
-            <div className="flex items-center gap-3 mb-4">
-              <svg className="w-5 h-5 text-white/50" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-              <h3 className="text-sm font-bold tracking-widest uppercase text-white/50">Live Preview</h3>
-            </div>
-            <p className="text-sm leading-relaxed text-white/90">
-              Changes made here will take effect in the "Our Elite Partners" gallery on the site immediately upon saving.
-            </p>
           </div>
         </div>
       </div>
