@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
-import { LayoutDashboard, Home as HomeIcon, Info, LogOut, Menu, X, Users } from 'lucide-react';
+import { LayoutDashboard, Home as HomeIcon, Info, LogOut, Menu, X, Users, Settings as SettingsIcon, MapPin, Sparkles, Palette } from 'lucide-react';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -48,7 +48,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
     { name: 'Home Page', href: '/admin/home', icon: HomeIcon },
     { name: 'About Page', href: '/admin/about', icon: Info },
+    { name: 'Team / Family', href: '/admin/team', icon: Users },
     { name: 'Partners', href: '/admin/partners', icon: Users },
+    { name: 'Hoardings', href: '/admin/services/hoardings', icon: MapPin },
+    { name: 'Branding', href: '/admin/services/branding', icon: Sparkles },
+    { name: 'Graphics', href: '/admin/services/graphics', icon: Palette },
+    { name: 'Site Settings', href: '/admin/settings', icon: SettingsIcon },
   ];
 
   return (
@@ -116,7 +121,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
              <span className="text-gray-400">Sanctuary</span>
              <span className="mx-3 text-gray-300">&gt;</span>
              <span className="text-[#1B2642] font-bold">
-               {pathname === '/admin' ? 'Dashboard' : pathname === '/admin/home' ? 'Home Page Management' : 'About Page Management'}
+               {pathname === '/admin' ? 'Dashboard' : pathname === '/admin/home' ? 'Home Page Management' : pathname === '/admin/about' ? 'About Page Management' : pathname === '/admin/team' ? 'Team & Advertising Family' : pathname === '/admin/settings' ? 'Site Settings & Logo' : 'Partners Gallery'}
              </span>
           </div>
           

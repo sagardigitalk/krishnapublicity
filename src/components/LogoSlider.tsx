@@ -1,8 +1,11 @@
+"use client";
+
 import { useState, useEffect } from "react";
-import Image from "next/image";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import apiService from "@/services/apiService";
+import endPointApi from "@/services/endPointApi";
 
 const defaultLogos = [
     { src: "/logos/logo1.png", alt: "Company 1" },
@@ -20,18 +23,21 @@ const defaultLogos = [
     { src: "/logos/logo13.png", alt: "Company 13" },
 ];
 
+const resolveLogoUrl = (src?: string, index: number = 0) => {
+    return apiService.getImageUrl(src, defaultLogos[index % defaultLogos.length].src);
+};
+
 export default function LogoSlider() {
     const [logos, setLogos] = useState(defaultLogos);
 
     useEffect(() => {
         const fetchPartners = async () => {
             try {
-                const res = await fetch('http://localhost:5000/api/home');
-                const data = await res.json();
-                if (data && data.partners && data.partners.length > 0) {
-                    const mappedLogos = data.partners.map((p: any) => ({
-                        src: p.image,
-                        alt: p.name || 'Partner Logo'
+                const data = await apiService.get(endPointApi.partners);
+                if (Array.isArray(data) && data.length > 0) {
+                    const mappedLogos = data.map((p: any, idx: number) => ({
+                        src: resolveLogoUrl(p.image, idx),
+                        alt: p.name || `Partner ${idx + 1}`
                     }));
                     setLogos(mappedLogos);
                 }
@@ -45,7 +51,7 @@ export default function LogoSlider() {
     const settings = {
         dots: false,
         infinite: true,
-        slidesToShow: 5,
+        slidesToShow: Math.min(5, Math.max(1, logos.length)),
         slidesToScroll: 1,
         autoplay: true,
         speed: 3000,
@@ -56,19 +62,19 @@ export default function LogoSlider() {
             {
                 breakpoint: 1024,
                 settings: {
-                    slidesToShow: 4,
+                    slidesToShow: Math.min(4, Math.max(1, logos.length)),
                 },
             },
             {
                 breakpoint: 768,
                 settings: {
-                    slidesToShow: 3,
+                    slidesToShow: Math.min(3, Math.max(1, logos.length)),
                 },
             },
             {
                 breakpoint: 480,
                 settings: {
-                    slidesToShow: 2,
+                    slidesToShow: Math.min(2, Math.max(1, logos.length)),
                 },
             },
         ],
@@ -76,20 +82,19 @@ export default function LogoSlider() {
 
     return (
         <div className="py-10 relative overflow-hidden">
-            {/* Gradient fades removed as requested */}
-            
             <div className="w-full px-4 md:px-8">
                 <Slider {...settings} className="client-slider">
                     {logos.map((logo, index) => (
                         <div key={index} className="px-6 outline-none">
                             <div className="h-48 flex items-center justify-center p-4 rounded-3xl bg-white border border-slate-100 hover:border-theme-navy/40 hover:bg-theme-cream shadow-lg transition-all duration-500 group cursor-pointer overflow-hidden">
                                 <div className="relative w-full h-full flex items-center justify-center">
-                                    <Image
+                                    <img
                                         src={logo.src}
                                         alt={logo.alt}
-                                        fill
-                                        sizes="(max-width: 768px) 100vw, 33vw"
-                                        className="object-contain transition-all duration-500 group-hover:scale-110 p-2"
+                                        className="max-w-full max-h-full object-contain transition-all duration-500 group-hover:scale-110 p-2"
+                                        onError={(e) => {
+                                            (e.target as HTMLImageElement).src = '/logos/logo1.png';
+                                        }}
                                     />
                                 </div>
                             </div>
@@ -106,4 +111,3 @@ export default function LogoSlider() {
         </div>
     );
 }
-

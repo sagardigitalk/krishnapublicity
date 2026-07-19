@@ -1,39 +1,36 @@
 'use client';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import toast from 'react-hot-toast';
+import apiService from '@/services/apiService';
+import endPointApi from '@/services/endPointApi';
 
 export default function AdminLogin() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
+    setLoading(true);
+    const toastId = toast.loading('Authenticating...');
 
     try {
-      const res = await fetch('http://localhost:5000/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
-      const data = await res.json();
-
-      if (res.ok) {
-        // In a real application, you might use cookies or a proper auth provider (e.g. NextAuth)
+      const data = await apiService.post(endPointApi.authLogin, { email, password });
+      if (data && data.token) {
         localStorage.setItem('token', data.token);
         localStorage.setItem('user', JSON.stringify(data));
+        toast.success('Welcome back, Admin!', { id: toastId });
         router.push('/admin');
       } else {
-        setError(data.message || 'Login failed');
+        toast.error(data.message || 'Login failed. Invalid credentials.', { id: toastId });
       }
-    } catch (err) {
-      setError('An error occurred. Please try again.');
+    } catch (err: any) {
+      toast.error(err.message || 'An error occurred. Please try again.', { id: toastId });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -51,12 +48,6 @@ export default function AdminLogin() {
           <p className="text-[10px] uppercase tracking-widest text-[#1B2642]/40 font-bold">Management & control center</p>
         </div>
         
-        {error && (
-          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-xs mb-6 text-center">
-            {error}
-          </div>
-        )}
-
         <form onSubmit={handleLogin} className="space-y-6">
           <div>
             <label className="block text-[#1B2642]/40 text-[10px] font-bold uppercase tracking-wider mb-2" htmlFor="email">

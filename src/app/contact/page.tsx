@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { FiMail, FiPhone, FiMapPin } from "react-icons/fi";
 import { Send } from "lucide-react";
@@ -10,8 +10,38 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import apiService from "@/services/apiService";
+import endPointApi from "@/services/endPointApi";
+
+const defaultSettings = {
+  email: 'krishnapublicity2016@gmail.com',
+  phone: '+91 7878161516',
+  address: 'C-107, First Floor, Ambikapark Apt, Opp. HDFC Bank, Nr. Laxmi Tiles, Punagam, Surat, Gujarat, India',
+  mapUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1241.3165544824567!2d72.86615550177982!3d21.202212736660353!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be04f7d045e2bc1%3A0x6e0d37977ac07b2c!2sKRISHNA%20PUBLICITY!5e0!3m2!1sen!2sin!4v1730006460466!5m2!1sen!2sin'
+};
 
 const Contact = () => {
+  const [settings, setSettings] = useState(defaultSettings);
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const data = await apiService.get(endPointApi.settings);
+        if (data) {
+          setSettings({
+            email: data.email || defaultSettings.email,
+            phone: data.phone || defaultSettings.phone,
+            address: data.address || defaultSettings.address,
+            mapUrl: data.mapUrl || defaultSettings.mapUrl
+          });
+        }
+      } catch (error) {
+        console.error('Error fetching contact settings:', error);
+      }
+    };
+    fetchSettings();
+  }, []);
+
   return (
     <section id="contact" className="py-12 bg-theme-cream relative w-full">
       <div className="container max-w-7xl px-6 mx-auto relative z-10">
@@ -52,7 +82,7 @@ const Contact = () => {
                 </CardHeader>
                 <CardContent className="p-0 space-y-10">
                   <motion.a 
-                    href="mailto:krishnapublicity2016@gmail.com"
+                    href={`mailto:${settings.email}`}
                     className="flex items-start space-x-6 group"
                     whileHover={{ x: 5 }}
                     transition={{ type: "spring", stiffness: 300 }}
@@ -63,13 +93,13 @@ const Contact = () => {
                     <div className="pt-1">
                       <h4 className="text-xs font-bold text-theme-navy/50 uppercase tracking-widest mb-1.5">Email</h4>
                       <p className="text-base font-semibold text-theme-navy">
-                        krishnapublicity2016@gmail.com
+                        {settings.email}
                       </p>
                     </div>
                   </motion.a>
 
                   <motion.a 
-                    href="tel:+917878161516"
+                    href={`tel:${settings.phone.replace(/\s+/g, '')}`}
                     className="flex items-start space-x-6 group"
                     whileHover={{ x: 5 }}
                     transition={{ type: "spring", stiffness: 300 }}
@@ -80,7 +110,7 @@ const Contact = () => {
                     <div className="pt-1">
                       <h4 className="text-xs font-bold text-theme-navy/50 uppercase tracking-widest mb-1.5">Phone</h4>
                       <p className="text-base font-semibold text-theme-navy">
-                        +91 7878161516
+                        {settings.phone}
                       </p>
                     </div>
                   </motion.a>
@@ -96,7 +126,7 @@ const Contact = () => {
                     <div className="pt-1">
                       <h4 className="text-xs font-bold text-theme-navy/50 uppercase tracking-widest mb-1.5">Location</h4>
                       <p className="text-sm font-light text-theme-navy/80 leading-relaxed max-w-sm">
-                        C-107, First Floor, Ambikapark Apt, Opp. HDFC Bank, Nr. Laxmi Tiles, Punagam, Surat, Gujarat, India
+                        {settings.address}
                       </p>
                     </div>
                   </motion.div>
@@ -105,7 +135,7 @@ const Contact = () => {
               
               <div className="w-full h-[400px] lg:h-auto min-h-[500px] relative group overflow-hidden bg-slate-100">
                 <iframe
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1241.3165544824567!2d72.86615550177982!3d21.202212736660353!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be04f7d045e2bc1%3A0x6e0d37977ac07b2c!2sKRISHNA%20PUBLICITY!5e0!3m2!1sen!2sin!4v1730006460466!5m2!1sen!2sin"
+                  src={settings.mapUrl}
                   width="100%"
                   height="100%"
                   style={{ border: 0 }}

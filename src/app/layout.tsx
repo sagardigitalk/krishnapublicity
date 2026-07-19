@@ -3,6 +3,7 @@
 import Preloader from "@/components/Preloader"
 import { ThemeProvider } from "@/contexts/ThemeContext"
 import { ToastProvider } from "@/components/ui/use-toast"
+import { Toaster } from "react-hot-toast"
 import { Plus_Jakarta_Sans, Playfair_Display } from "next/font/google"
 import { FaWhatsapp } from "react-icons/fa"
 import "slick-carousel/slick/slick.css";
@@ -61,6 +62,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${plusJakarta.variable} ${playfairDisplay.variable}`}>
       <body className="font-sans">
+        <Toaster position="top-right" reverseOrder={false} />
         <Preloader />
         <ThemeProvider>
           <ToastProvider>

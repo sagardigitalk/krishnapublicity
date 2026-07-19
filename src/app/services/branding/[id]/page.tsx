@@ -1,12 +1,15 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, ChevronLeft, ChevronRight } from 'lucide-react';
+import Navbar from "@/app/Navbar/page";
+import Footer from "@/app/Footer/page";
+import apiService from "@/services/apiService";
+import endPointApi from "@/services/endPointApi";
 
 interface BrandingType {
   name: string;
@@ -14,7 +17,7 @@ interface BrandingType {
   description: string;
 }
 
-const brandingTypes: Record<string, BrandingType> = {
+const fallbackBrandingTypes: Record<string, BrandingType> = {
   "tricycle-ad": {
     name: "Tricycle Ad",
     images: ["/branndingImage/t2.jpg", "/branndingImage/t3.jpg", "/branndingImage/t4.jpg"],
@@ -34,83 +37,6 @@ const brandingTypes: Record<string, BrandingType> = {
     images: ["/branndingImage/w2.jpg", "/branndingImage/w3.jpg", "/branndingImage/w4.jpg"],
     description: "Large-scale artistic advertisements on building walls",
   },
-  "tempovan-ad": {
-    name: "Tempovan Ad",
-    images: [
-      "/branndingImage/te2.jpg",
-      "/branndingImage/te4.jpg",
-      "/branndingImage/te3.jpg",
-    ],
-    description: "Mobile advertising on tempo vans for wider reach",
-  },
-  canopy: {
-    name: "Canopy",
-    images: [
-      "/branndingImage/c4.jpg",
-      "/branndingImage/c2.jpg",
-      "/branndingImage/c3.jpg",
-    ],
-    description: "Branded canopies for events and outdoor promotions",
-  },
-  gazebo: {
-    name: "Gazebo",
-    images: [
-      "/branndingImage/g4.jpg",
-      "/branndingImage/g2.jpg",
-      "/branndingImage/g3.jpg",
-    ],
-    description: "Customized gazebos for trade shows and exhibitions",
-  },
-  "acrylic-boards": {
-    name: "Acrylic Boards",
-    images: [
-      "/branndingImage/li4.jpg",
-      "/branndingImage/li2.jpg",
-      "/branndingImage/li3.jpg",
-    ],
-    description: "Sleek and modern acrylic signage for businesses",
-  },
-  "acp-elevation": {
-    name: "ACP Elevation",
-    images: ["/branndingImage/ac4.jpg", "/branndingImage/ac2.jpg", "/branndingImage/ac3.jpg"],
-    description: "Aluminum Composite Panel elevations for building branding",
-  },
-  "non-woven-bag": {
-    name: "Non Woven Bag",
-    images: [
-      "/branndingImage/no4.jpg",
-      "/branndingImage/no2.jpg",
-      "/branndingImage/no3.jpg",
-    ],
-    description: "Eco-friendly and durable promotional bags",
-  },
-  "lighting-board": {
-    name: "Lighting Board",
-    images: [
-      "/branndingImage/a4.jpg",
-      "/branndingImage/a2.jpg",
-      "/branndingImage/a3.jpg",
-    ],
-    description: "Illuminated signage for enhanced visibility",
-  },
-  "led-board": {
-    name: "LED Board",
-    images: [
-      "/branndingImage/le4.jpg",
-      "/branndingImage/le2.jpg",
-      "/branndingImage/le3.jpg",
-    ],
-    description: "Energy-efficient LED displays for dynamic advertising",
-  },
-  "sunpack-board": {
-    name: "Sunpack Board",
-    images: [
-      "/branndingImage/sp4.jpg",
-      "/branndingImage/sp2.jpg",
-      "/branndingImage/sp3.jpg",
-    ],
-    description: "Durable and weather-resistant signage for outdoor use",
-  },
 };
 
 export default function BrandingTypePage() {
@@ -121,115 +47,154 @@ export default function BrandingTypePage() {
 
   useEffect(() => {
     if (params.id && typeof params.id === "string") {
-      const type = brandingTypes[params.id];
-      if (type) {
-        setBrandingType(type);
-      }
+      const slugKey = params.id.toLowerCase();
+      
+      // Attempt to fetch from API
+      apiService.get(endPointApi.branding)
+        .then((data: any[]) => {
+          if (Array.isArray(data)) {
+            const found = data.find((item: any) => item.slug?.toLowerCase() === slugKey);
+            if (found) {
+              const gallery = (found.galleryImages && found.galleryImages.length > 0) 
+                ? found.galleryImages 
+                : [found.image || '/branndingImage/t1.jpg'];
+              setBrandingType({
+                name: found.name,
+                images: gallery.map((imgUrl: string) => apiService.getImageUrl(imgUrl)),
+                description: found.description
+              });
+              return;
+            }
+          }
+          if (fallbackBrandingTypes[slugKey]) {
+            setBrandingType(fallbackBrandingTypes[slugKey]);
+          }
+        })
+        .catch(() => {
+          if (fallbackBrandingTypes[slugKey]) {
+            setBrandingType(fallbackBrandingTypes[slugKey]);
+          }
+        });
     }
   }, [params.id]);
 
   if (!brandingType) {
     return (
-      <div className="container mx-auto px-4 py-16 bg-gradient-to-b from-[#3982c3] to-[#1e4060] min-h-screen text-white">
-        <Button
-          variant="outline"
-          className="mb-8 bg-white text-[#3982c3] hover:bg-[#3982c3] hover:text-white"
-          onClick={() => router.back()}
-        >
-          <ArrowLeft className="mr-2 h-4 w-4" /> Back
-        </Button>
-        <h1 className="text-4xl font-bold mb-8">Branding type not found</h1>
+      <div className="bg-theme-cream min-h-screen flex flex-col justify-between">
+        <Navbar />
+        <div className="container mx-auto px-4 pt-36 pb-24 text-theme-navy flex flex-col items-center justify-center">
+          <Button
+            variant="outline"
+            className="mb-8 bg-white border-theme-navy/10 text-theme-navy hover:bg-theme-navy hover:text-white"
+            onClick={() => router.back()}
+          >
+            <ArrowLeft className="mr-2 h-4 w-4" /> Back
+          </Button>
+          <h1 className="text-4xl font-bold mb-8">Branding service not found</h1>
+        </div>
+        <Footer />
       </div>
     );
   }
 
   const nextImage = () => {
-    setCurrentImageIndex(
-      (prevIndex) => (prevIndex + 1) % brandingType.images.length
-    );
+    setCurrentImageIndex((prevIndex) => (prevIndex + 1) % brandingType.images.length);
   };
 
   const prevImage = () => {
     setCurrentImageIndex(
-      (prevIndex) =>
-        (prevIndex - 1 + brandingType.images.length) %
-        brandingType.images.length
+      (prevIndex) => (prevIndex - 1 + brandingType.images.length) % brandingType.images.length
     );
   };
 
   return (
-    <div className="container mx-auto px-4 py-16 bg-gradient-to-b from-[#3982c3] to-[#1e4060] min-h-screen text-white">
-      <Link href="/services/branding">
-        <Button
-          variant="outline"
-          className="mb-8 bg-white text-[#3982c3] hover:bg-[#3982c3] hover:text-white"
-        >
-          <ArrowLeft className="mr-2 h-4 w-4" /> Back
-        </Button>
-      </Link>
-      <motion.h1
-        className="text-4xl font-bold mb-8"
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
-        {brandingType.name}
-      </motion.h1>
-      <motion.p
-        className="text-xl text-[#d1e8ff] mb-8"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.5, delay: 0.2 }}
-      >
-        {brandingType.description}
-      </motion.p>
-      <div className="relative flex items-center justify-center">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={currentImageIndex}
-            className="relative h-96 md:h-[600px] rounded-lg overflow-hidden"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.5 }}
+    <div className="bg-theme-cream min-h-screen flex flex-col justify-between">
+      <Navbar />
+
+      <div className="container mx-auto px-6 pt-36 pb-24 text-theme-navy max-w-6xl">
+        <Link href="/services/branding">
+          <Button
+            variant="outline"
+            className="mb-8 bg-white border-theme-navy/10 text-theme-navy hover:bg-theme-navy hover:text-white transition-all rounded-xl"
           >
-            <Image
-              src={brandingType.images[currentImageIndex]}
-              alt={`${brandingType.name} ${currentImageIndex + 1}`}
-              width={900}
-              height={600}
-              objectFit="cover"
-            />
-          </motion.div>
-        </AnimatePresence>
-        <Button
-          variant="outline"
-          className="absolute top-1/2 left-4 transform -translate-y-1/2 bg-white bg-opacity-50 hover:bg-opacity-75 text-[#3982c3]"
-          onClick={prevImage}
+            <ArrowLeft className="mr-2 h-4 w-4" /> Back to Branding Services
+          </Button>
+        </Link>
+
+        <motion.h1
+          className="text-4xl md:text-5xl font-black text-theme-navy tracking-tight mb-4"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
         >
-          <ChevronLeft className="h-6 w-6" />
-        </Button>
-        <Button
-          variant="outline"
-          className="absolute top-1/2 right-4 transform -translate-y-1/2 bg-white bg-opacity-50 hover:bg-opacity-75 text-[#3982c3]"
-          onClick={nextImage}
+          {brandingType.name}
+        </motion.h1>
+
+        <motion.p
+          className="text-lg md:text-xl text-theme-navy/70 mb-12 max-w-3xl font-light"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
         >
-          <ChevronRight className="h-6 w-6" />
-        </Button>
+          {brandingType.description}
+        </motion.p>
+
+        {/* Carousel / Image Showcase */}
+        <div className="relative flex flex-col items-center justify-center bg-white p-4 md:p-8 rounded-[2.5rem] border border-theme-navy/10 shadow-xl overflow-hidden">
+          <div className="relative w-full h-[350px] md:h-[550px] rounded-2xl overflow-hidden bg-slate-100 flex items-center justify-center">
+            <AnimatePresence mode="wait">
+              <motion.img
+                key={currentImageIndex}
+                src={brandingType.images[currentImageIndex]}
+                alt={`${brandingType.name} ${currentImageIndex + 1}`}
+                className="w-full h-full object-contain"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.4 }}
+              />
+            </AnimatePresence>
+
+            {brandingType.images.length > 1 && (
+              <>
+                <Button
+                  variant="outline"
+                  className="absolute top-1/2 left-4 transform -translate-y-1/2 rounded-full w-12 h-12 bg-white/80 backdrop-blur-md hover:bg-white text-theme-navy border-none shadow-lg"
+                  onClick={prevImage}
+                >
+                  <ChevronLeft className="h-6 w-6" />
+                </Button>
+                <Button
+                  variant="outline"
+                  className="absolute top-1/2 right-4 transform -translate-y-1/2 rounded-full w-12 h-12 bg-white/80 backdrop-blur-md hover:bg-white text-theme-navy border-none shadow-lg"
+                  onClick={nextImage}
+                >
+                  <ChevronRight className="h-6 w-6" />
+                </Button>
+              </>
+            )}
+          </div>
+
+          {brandingType.images.length > 1 && (
+            <div className="flex justify-center mt-6 gap-2">
+              {brandingType.images.map((_, index) => (
+                <motion.button
+                  key={index}
+                  className={`h-3 rounded-full transition-all ${
+                    index === currentImageIndex ? "w-8 bg-theme-navy" : "w-3 bg-theme-navy/20"
+                  }`}
+                  onClick={() => setCurrentImageIndex(index)}
+                  whileHover={{ scale: 1.2 }}
+                  whileTap={{ scale: 0.8 }}
+                  aria-label={`View image ${index + 1}`}
+                />
+              ))}
+            </div>
+          )}
+        </div>
       </div>
-      <div className="flex justify-center mt-4">
-        {brandingType.images.map((_, index) => (
-          <motion.button
-            key={index}
-            className={`h-3 w-3 rounded-full mx-1 ${index === currentImageIndex ? "bg-white" : "bg-[#2c6190]"
-              }`}
-            onClick={() => setCurrentImageIndex(index)}
-            whileHover={{ scale: 1.2 }}
-            whileTap={{ scale: 0.8 }}
-            aria-label={`View image ${index + 1}`}
-          />
-        ))}
-      </div>
+
+      <Footer />
     </div>
   );
 }

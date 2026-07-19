@@ -1,11 +1,55 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Link as ScrollLink } from "react-scroll";
 import { ArrowRight } from "lucide-react";
+import apiService from "@/services/apiService";
+import endPointApi from "@/services/endPointApi";
+
+const defaultFooterSettings = {
+  logo: '',
+  brandName: 'KRISHNA PUBLICITY',
+  tagline: 'PREMIUM PUBLICITY',
+  email: 'krishnapublicity2016@gmail.com',
+  phone: '+91 78740 51516',
+  socialLinks: {
+    instagram: 'https://instagram.com/krishnapublicity_surat',
+    facebook: 'https://www.facebook.com/krishna.pubgps',
+    twitter: 'https://twitter.com/Mrsanju_krishna'
+  }
+};
 
 const Footer = () => {
+  const [settings, setSettings] = useState(defaultFooterSettings);
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const data = await apiService.get(endPointApi.settings);
+        if (data) {
+          setSettings({
+            logo: data.logo || '',
+            brandName: data.brandName || defaultFooterSettings.brandName,
+            tagline: data.tagline || defaultFooterSettings.tagline,
+            email: data.email || defaultFooterSettings.email,
+            phone: data.altPhone || data.phone || defaultFooterSettings.phone,
+            socialLinks: {
+              instagram: data.socialLinks?.instagram || defaultFooterSettings.socialLinks.instagram,
+              facebook: data.socialLinks?.facebook || defaultFooterSettings.socialLinks.facebook,
+              twitter: data.socialLinks?.twitter || defaultFooterSettings.socialLinks.twitter
+            }
+          });
+        }
+      } catch (error) {
+        console.error('Error fetching footer settings:', error);
+      }
+    };
+    fetchSettings();
+  }, []);
+
+  const logoUrl = settings.logo ? apiService.getImageUrl(settings.logo) : null;
+
   return (
     <footer className="relative bg-[#1D2A44] text-white pt-8 pb-4 px-6 md:px-12 lg:px-20 overflow-hidden font-sans">
       <motion.div 
@@ -21,12 +65,16 @@ const Footer = () => {
           {/* Column 1: Brand & Intro */}
           <div className="flex flex-col space-y-6 lg:pr-8">
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 rounded-full bg-white text-[#1D2A44] flex items-center justify-center font-bold text-xl">
-                K
-              </div>
+              {logoUrl ? (
+                <img src={logoUrl} alt={settings.brandName} className="h-10 w-auto object-contain" />
+              ) : (
+                <div className="w-10 h-10 rounded-full bg-white text-[#1D2A44] flex items-center justify-center font-bold text-xl">
+                  {settings.brandName.charAt(0)}
+                </div>
+              )}
               <div className="flex flex-col">
-                <span className="font-bold text-lg tracking-widest uppercase leading-tight">KRISHNA</span>
-                <span className="text-[#DBA314] text-xs font-semibold tracking-widest uppercase">PREMIUM PUBLICITY</span>
+                <span className="font-bold text-lg tracking-widest uppercase leading-tight">{settings.brandName}</span>
+                <span className="text-[#DBA314] text-xs font-semibold tracking-widest uppercase">{settings.tagline}</span>
               </div>
             </div>
             <p className="text-sm text-gray-300 uppercase tracking-widest leading-relaxed max-w-sm mt-4">
@@ -52,9 +100,15 @@ const Footer = () => {
           <div className="flex flex-col space-y-6">
             <h4 className="text-gray-400 text-xs font-semibold tracking-widest uppercase">FOLLOW ON</h4>
             <ul className="space-y-4 text-xs font-semibold tracking-widest uppercase text-gray-200">
-              <li><a href="https://instagram.com/krishnapublicity_surat?igshid=ZDc4ODBmNjlmNQ==" target="_blank" rel="noreferrer" className="hover:text-white transition-colors">INSTAGRAM</a></li>
-              <li><a href="https://www.facebook.com/krishna.pubgps?mibextid=ZbWKwL" target="_blank" rel="noreferrer" className="hover:text-white transition-colors">FACEBOOK</a></li>
-              <li><a href="https://twitter.com/Mrsanju_krishna/status/1637096196224294914?t=kmgRLJjh4nqbhyaGgYvcVA&s=19" target="_blank" rel="noreferrer" className="hover:text-white transition-colors">TWITTER</a></li>
+              {settings.socialLinks.instagram && (
+                <li><a href={settings.socialLinks.instagram} target="_blank" rel="noreferrer" className="hover:text-white transition-colors">INSTAGRAM</a></li>
+              )}
+              {settings.socialLinks.facebook && (
+                <li><a href={settings.socialLinks.facebook} target="_blank" rel="noreferrer" className="hover:text-white transition-colors">FACEBOOK</a></li>
+              )}
+              {settings.socialLinks.twitter && (
+                <li><a href={settings.socialLinks.twitter} target="_blank" rel="noreferrer" className="hover:text-white transition-colors">TWITTER</a></li>
+              )}
             </ul>
           </div>
 
@@ -65,11 +119,11 @@ const Footer = () => {
             </p>
             <div className="mt-8 flex flex-col space-y-2 lg:items-end">
               <h4 className="text-gray-400 text-xs font-semibold tracking-widest uppercase">GET IN TOUCH</h4>
-              <a href="mailto:krishnapublicity@gmail.com" className="text-white hover:text-[#DBA314] transition-colors font-semibold tracking-wider text-sm">
-                krishnapublicity@gmail.com
+              <a href={`mailto:${settings.email}`} className="text-white hover:text-[#DBA314] transition-colors font-semibold tracking-wider text-sm">
+                {settings.email}
               </a>
-              <a href="tel:+917874051516" className="text-white hover:text-[#DBA314] transition-colors font-semibold tracking-wider text-sm">
-                +91 78740 51516
+              <a href={`tel:${settings.phone.replace(/\s+/g, '')}`} className="text-white hover:text-[#DBA314] transition-colors font-semibold tracking-wider text-sm">
+                {settings.phone}
               </a>
             </div>
           </div>

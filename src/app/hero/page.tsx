@@ -5,6 +5,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import apiService from "@/services/apiService";
+import endPointApi from "@/services/endPointApi";
 
 const heroImages = [
   "/banner2.jpg",
@@ -15,16 +17,20 @@ const heroImages = [
 
 export default function Hero() {
   const [currentImage, setCurrentImage] = useState(0);
-  const [heroData, setHeroData] = useState({
+  const [heroData, setHeroData] = useState<{
+    title: string;
+    subtitle: string;
+    image?: string;
+  }>({
     title: 'Krishna Publicity',
-    subtitle: 'Elevate your market presence with premium outdoor advertising and immersive digital campaigns crafted for impact.'
+    subtitle: 'Elevate your market presence with premium outdoor advertising and immersive digital campaigns crafted for impact.',
+    image: ''
   });
 
   useEffect(() => {
     const fetchHeroData = async () => {
       try {
-        const res = await fetch('http://localhost:5000/api/home');
-        const data = await res.json();
+        const data = await apiService.get(endPointApi.home);
         if (data && data.hero) {
           setHeroData(data.hero);
         }
@@ -36,22 +42,25 @@ export default function Hero() {
   }, []);
 
   useEffect(() => {
+    if (heroData.image) return;
     const timer = setInterval(() => {
       setCurrentImage((prev) => (prev + 1) % heroImages.length);
     }, 6000); // slightly slower for elegant feel
     return () => clearInterval(timer);
-  }, []);
+  }, [heroData.image]);
+
+  const activeImage = heroData.image || heroImages[currentImage];
 
   return (
     <section
       id="home"
       className="relative h-[100dvh] min-h-[600px] w-full overflow-hidden flex items-end pb-20 pt-28 font-sans"
     >
-      {/* Full-screen Background Carousel */}
+      {/* Full-screen Background */}
       <div className="absolute inset-0 z-0 bg-black">
         <AnimatePresence mode="wait">
           <motion.div
-            key={currentImage}
+            key={activeImage}
             initial={{ opacity: 0, scale: 1.05 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0 }}
@@ -59,16 +68,14 @@ export default function Hero() {
             className="absolute inset-0"
           >
             <Image
-              src={heroImages[currentImage]}
-              alt={`Campaign Background ${currentImage + 1}`}
+              src={activeImage}
+              alt="Campaign Background"
               fill
               className="object-cover"
-              priority={currentImage === 0}
+              priority
             />
           </motion.div>
         </AnimatePresence>
-        
-        {/* Removed heavy dark overlays as requested */}
       </div>
 
       <div className="relative z-10 mx-auto px-6 lg:px-16 flex flex-col lg:flex-row justify-between items-end gap-12 w-full">
@@ -154,21 +161,23 @@ export default function Hero() {
 
       </div>
       
-      {/* Bottom Carousel Indicators */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex justify-center gap-3 z-20">
-        {heroImages.map((_, idx) => (
-          <button
-            key={idx}
-            onClick={() => setCurrentImage(idx)}
-            aria-label={`Go to slide ${idx + 1}`}
-            className={`h-1.5 rounded-full transition-all duration-500 ${
-              idx === currentImage 
-                ? "w-8 bg-white" 
-                : "w-2 bg-white/30 hover:bg-white/60"
-            }`}
-          />
-        ))}
-      </div>
+      {/* Bottom Carousel Indicators (if carousel is active) */}
+      {!heroData.image && (
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex justify-center gap-3 z-20">
+          {heroImages.map((_, idx) => (
+            <button
+              key={idx}
+              onClick={() => setCurrentImage(idx)}
+              aria-label={`Go to slide ${idx + 1}`}
+              className={`h-1.5 rounded-full transition-all duration-500 ${
+                idx === currentImage 
+                  ? "w-8 bg-white" 
+                  : "w-2 bg-white/30 hover:bg-white/60"
+              }`}
+            />
+          ))}
+        </div>
+      )}
     </section>
   );
 }

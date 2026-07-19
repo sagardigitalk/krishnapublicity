@@ -8,7 +8,6 @@ import Services from "./services/page";
 import Gallery from "./gallery/page"
 import Contact from "./contact/page";
 import Footer from "./Footer/page";
-import LogoSlider from "@/components/LogoSlider";
 import TeamSection from "@/components/TeamSection";
 import FeatureSection from "@/components/FeatureSection";
 
@@ -34,14 +33,6 @@ export default function Home() {
       
       {/* New Interactive Section: Feature Section */}
       <FeatureSection />
-
-      {/* New Interactive Section: Trusted Clients Slider */}
-      <section className="bg-white py-12 border-y border-slate-100">
-        <div className="text-center mb-8">
-          <p className="text-sm font-bold tracking-[0.3em] uppercase text-theme-navy/50">Trusted by Industry Leaders</p>
-        </div>
-        <LogoSlider />
-      </section>
 
       <Services/>
 

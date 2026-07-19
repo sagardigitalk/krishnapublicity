@@ -28,7 +28,7 @@ export default function Services() {
   return (
     <section id="services" className="py-12 bg-theme-cream w-full">
       <div className="w-full px-6 lg:px-16 mx-auto">
-        
+
         {/* Header Section */}
         <div className="text-center mb-16">
           <motion.div
@@ -65,10 +65,10 @@ export default function Services() {
                 fill
                 className="object-cover transition-transform duration-[1.5s] ease-out group-hover:scale-105"
               />
-              
+
               {/* Gradient Overlay for Text */}
               <div className="absolute inset-0 bg-gradient-to-t from-theme-navy/90 via-theme-navy/20 to-transparent transition-opacity duration-500 group-hover:opacity-90" />
-              
+
               {/* Text Content */}
               <div className="absolute bottom-0 left-0 w-full p-6 lg:p-8 flex flex-col justify-end">
                 <h3 className="text-white font-extrabold text-sm md:text-base tracking-widest uppercase mb-3 transform transition-transform duration-500 group-hover:-translate-y-2">

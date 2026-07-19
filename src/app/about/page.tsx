@@ -4,7 +4,8 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Users, CheckCircle, Award, ChevronLeft, ChevronRight, Zap, Target } from 'lucide-react';
 import { Button } from "@/components/ui/button";
-import Image from "next/image";
+import apiService from "@/services/apiService";
+import endPointApi from "@/services/endPointApi";
 
 // Default static fallbacks
 const defaultStats = [
@@ -35,6 +36,11 @@ const defaultTeamMembers = [
   }
 ];
 
+const getMemberImage = (imagePath?: string, index: number = 0) => {
+  const defaultImages = ['/main1.jpg', '/main2.jpg', '/main3.jpg'];
+  return apiService.getImageUrl(imagePath, defaultImages[index % defaultImages.length]);
+};
+
 export default function About() {
   const [currentMember, setCurrentMember] = useState(0);
   const [aboutData, setAboutData] = useState({
@@ -42,21 +48,17 @@ export default function About() {
     description: 'Krishna Publicity isn’t just an advertising agency. We are architects of brand experiences, meticulously designing campaigns that resonate and convert.'
   });
   const [teamMembers, setTeamMembers] = useState(defaultTeamMembers);
-  const [stats, setStats] = useState(defaultStats); // Keeping this static or fetch from home api if needed
+  const [stats, setStats] = useState(defaultStats);
 
   useEffect(() => {
     const fetchAboutData = async () => {
       try {
-        const res = await fetch('http://localhost:5000/api/about');
-        const data = await res.json();
+        const data = await apiService.get(endPointApi.about);
         if (data) {
           if (data.title) setAboutData(prev => ({ ...prev, title: data.title }));
           if (data.description) setAboutData(prev => ({ ...prev, description: data.description }));
           if (data.team && data.team.length > 0) setTeamMembers(data.team);
           if (data.stats && data.stats.length > 0) {
-             // Map icons by string if necessary, but here we can just use the backend data
-             // To properly render Lucide icons dynamically from strings, we might need a small mapping.
-             // For simplicity, we just keep the data structure compatible.
              const parsedStats = data.stats.map((s: any) => ({
                icon: s.icon === 'check' ? CheckCircle : 
                      s.icon === 'award' ? Award : 
@@ -76,6 +78,9 @@ export default function About() {
 
   const nextMember = () => setCurrentMember((prev) => (prev + 1) % teamMembers.length);
   const prevMember = () => setCurrentMember((prev) => (prev - 1 + teamMembers.length) % teamMembers.length);
+
+  const activeMember = teamMembers[currentMember] || defaultTeamMembers[0];
+  const memberImg = getMemberImage(activeMember?.image, currentMember);
 
   return (
     <section id="about" className="relative py-24 bg-theme-cream overflow-hidden w-full">
@@ -150,53 +155,49 @@ export default function About() {
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
-            className="relative h-[600px] w-full rounded-[3rem] overflow-hidden group shadow-lg"
+            className="relative h-[600px] w-full rounded-[3rem] overflow-hidden group shadow-xl bg-slate-900"
           >
             <AnimatePresence mode="wait">
               <motion.div
                 key={currentMember}
-                initial={{ opacity: 0, scale: 1.1 }}
+                initial={{ opacity: 0, scale: 1.05 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.6 }}
                 className="absolute inset-0"
               >
-                {teamMembers.length > 0 && (
-                  <>
-                    <Image 
-                      src={teamMembers[currentMember].image || '/placeholder.jpg'} 
-                      alt={teamMembers[currentMember].name} 
-                      fill 
-                      className="object-cover transition-transform duration-700 group-hover:scale-105"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#1B2642]/90 via-[#1B2642]/40 to-transparent" />
-                  </>
-                )}
+                <img 
+                  src={memberImg} 
+                  alt={activeMember?.name || "Team Member"} 
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = '/main1.jpg';
+                  }}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#1B2642]/95 via-[#1B2642]/40 to-transparent" />
               </motion.div>
             </AnimatePresence>
 
-            <div className="absolute inset-0 p-10 flex flex-col justify-end">
+            <div className="absolute inset-0 p-10 flex flex-col justify-end z-10">
               <AnimatePresence mode="wait">
-                {teamMembers.length > 0 && (
-                  <motion.div
-                    key={currentMember}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -20 }}
-                    transition={{ duration: 0.4, delay: 0.2 }}
-                    className="space-y-4"
-                  >
-                    <div className="inline-block px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white text-[10px] font-bold uppercase tracking-[0.2em]">
-                      {teamMembers[currentMember].role}
-                    </div>
-                    <h3 className="text-3xl font-bold text-white">
-                      {teamMembers[currentMember].name}
-                    </h3>
-                    <p className="text-base text-white/80 font-light max-w-md leading-relaxed">
-                      &quot;{teamMembers[currentMember].bio}&quot;
-                    </p>
-                  </motion.div>
-                )}
+                <motion.div
+                  key={currentMember}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.4, delay: 0.2 }}
+                  className="space-y-4"
+                >
+                  <div className="inline-block px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white text-[10px] font-bold uppercase tracking-[0.2em]">
+                    {activeMember?.role || "Leadership"}
+                  </div>
+                  <h3 className="text-3xl font-bold text-white">
+                    {activeMember?.name}
+                  </h3>
+                  <p className="text-base text-white/80 font-light max-w-md leading-relaxed">
+                    &quot;{activeMember?.bio}&quot;
+                  </p>
+                </motion.div>
               </AnimatePresence>
 
               <div className="flex items-center space-x-4 mt-8">

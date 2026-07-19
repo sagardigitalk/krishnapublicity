@@ -4,6 +4,8 @@ import { useState, useEffect } from "react"
 import { Link as ScrollLink } from "react-scroll"
 import { motion, AnimatePresence } from "framer-motion"
 import { Menu, X } from "lucide-react"
+import apiService from "@/services/apiService"
+import endPointApi from "@/services/endPointApi"
 
 const navItems = [
   { section: "home", label: "Home" },
@@ -18,6 +20,15 @@ export default function Navbar() {
   const [activeSection, setActiveSection] = useState("home")
   const [scrolled, setScrolled] = useState(false)
   const [mounted, setMounted] = useState(false)
+  const [siteSettings, setSiteSettings] = useState<{
+    logo?: string;
+    brandName?: string;
+    phone?: string;
+  }>({
+    logo: '',
+    brandName: 'KRISHNA.',
+    phone: '+91 7878161516'
+  })
 
   useEffect(() => {
     setMounted(true)
@@ -36,10 +47,26 @@ export default function Navbar() {
     }
 
     window.addEventListener("scroll", handleScroll, { passive: true })
+
+    // Fetch site settings
+    apiService.get(endPointApi.settings)
+      .then(data => {
+        if (data) {
+          setSiteSettings({
+            logo: data.logo || '',
+            brandName: data.brandName || 'KRISHNA.',
+            phone: data.phone || '+91 7878161516'
+          })
+        }
+      })
+      .catch(err => console.error('Error fetching settings for Navbar:', err))
+
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
   if (!mounted) return null
+
+  const logoUrl = siteSettings.logo ? apiService.getImageUrl(siteSettings.logo) : null;
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 flex flex-col">
@@ -59,13 +86,16 @@ export default function Navbar() {
             {/* Logo */}
             <motion.div whileHover={{ scale: 1.02 }} className="flex items-center cursor-pointer z-10">
               <ScrollLink to="home" smooth={true} duration={800}>
-                 <span className={`font-extrabold text-2xl md:text-3xl tracking-tighter flex items-center gap-1 transition-colors duration-500 ${scrolled ? 'text-theme-navy' : 'text-white'}`}>
-                   {/* Optional abstract logo shape */}
-                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className={`mr-1 transition-colors duration-500 ${scrolled ? 'text-theme-navy' : 'text-white'}`}>
-                      <path d="M6 3V21M6 12C6 12 10 10 14 10C18 10 20 12 20 16C20 20 18 22 14 22C10 22 6 20 6 20" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-                   </svg>
-                   KRISHNA.
-                 </span>
+                {logoUrl ? (
+                  <img src={logoUrl} alt="Logo" className="h-9 md:h-11 w-auto object-contain" />
+                ) : (
+                  <span className={`font-extrabold text-2xl md:text-3xl tracking-tighter flex items-center gap-1 transition-colors duration-500 ${scrolled ? 'text-theme-navy' : 'text-white'}`}>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className={`mr-1 transition-colors duration-500 ${scrolled ? 'text-theme-navy' : 'text-white'}`}>
+                       <path d="M6 3V21M6 12C6 12 10 10 14 10C18 10 20 12 20 16C20 20 18 22 14 22C10 22 6 20 6 20" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                    {siteSettings.brandName || 'KRISHNA.'}
+                  </span>
+                )}
               </ScrollLink>
             </motion.div>
 
@@ -101,7 +131,7 @@ export default function Navbar() {
             
             {/* Desktop Right Action Area */}
             <div className="hidden md:flex items-center space-x-6 z-10">
-              <a href="tel:+917878161516" className={`group flex items-center justify-center space-x-2 text-xs font-bold uppercase tracking-widest border px-8 py-3 rounded-full transition-all duration-500 ${
+              <a href={`tel:${(siteSettings.phone || '+91 7878161516').replace(/\s+/g, '')}`} className={`group flex items-center justify-center space-x-2 text-xs font-bold uppercase tracking-widest border px-8 py-3 rounded-full transition-all duration-500 ${
                 scrolled 
                   ? "border-theme-navy/20 bg-transparent text-theme-navy hover:bg-theme-navy hover:text-white"
                   : "border-white/30 bg-white/10 backdrop-blur-md text-white hover:bg-white hover:text-theme-navy"

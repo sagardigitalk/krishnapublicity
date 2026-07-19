@@ -1,10 +1,14 @@
 'use client';
 import { useState, useEffect } from 'react';
+import toast from 'react-hot-toast';
+import FileUpload from '@/components/admin/FileUpload';
+import ConfirmModal from '@/components/admin/ConfirmModal';
+import apiService from '@/services/apiService';
+import endPointApi from '@/services/endPointApi';
 
 export default function AdminAbout() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [message, setMessage] = useState('');
   
   const [aboutData, setAboutData] = useState({
     title: '', 
@@ -13,68 +17,32 @@ export default function AdminAbout() {
     stats: [] as any[]
   });
 
+  // Deletion confirm state
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [deletingType, setDeletingType] = useState<'team' | 'stat' | null>(null);
+  const [deletingIndex, setDeletingIndex] = useState<number | null>(null);
+
   useEffect(() => {
-    fetch('http://localhost:5000/api/about')
-      .then(res => res.json())
+    apiService.get(endPointApi.about)
       .then(data => {
         setAboutData(data);
         setLoading(false);
       })
       .catch(err => {
         console.error(err);
+        toast.error('Failed to load About page content');
         setLoading(false);
       });
   }, []);
 
-  const uploadFile = async (e: any, index: number) => {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    const formData = new FormData();
-    formData.append('image', file);
-
-    try {
-      const token = localStorage.getItem('token');
-      const res = await fetch('http://localhost:5000/api/upload', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        },
-        body: formData
-      });
-
-      if (res.ok) {
-        const imagePath = await res.text();
-        handleTeamChange(index, 'image', `http://localhost:5000${imagePath}`);
-      } else {
-        setMessage('Error uploading image');
-      }
-    } catch (error) {
-      console.error(error);
-      setMessage('Error uploading image');
-    }
-  };
-
   const handleSave = async () => {
     setSaving(true);
-    setMessage('');
+    const toastId = toast.loading('Saving About page content...');
     try {
-      const token = localStorage.getItem('token');
-      const res = await fetch('http://localhost:5000/api/about', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}` 
-        },
-        body: JSON.stringify(aboutData)
-      });
-      if (res.ok) {
-        setMessage('About page content saved successfully!');
-      } else {
-        setMessage('Error saving content.');
-      }
-    } catch (err) {
-      setMessage('An error occurred.');
+      await apiService.put(endPointApi.about, aboutData);
+      toast.success('About page content saved successfully!', { id: toastId });
+    } catch (err: any) {
+      toast.error(err.message || 'An error occurred while saving.', { id: toastId });
     }
     setSaving(false);
   };
@@ -97,12 +65,13 @@ export default function AdminAbout() {
       ...aboutData,
       team: [...aboutData.team, { name: 'New Member', role: 'Role', image: '', bio: 'Short bio...' }]
     });
+    toast.success('New team member added');
   };
 
   const removeTeamMember = (index: number) => {
-    const newTeam = [...aboutData.team];
-    newTeam.splice(index, 1);
-    setAboutData({ ...aboutData, team: newTeam });
+    setDeletingType('team');
+    setDeletingIndex(index);
+    setDeleteConfirmOpen(true);
   };
 
   const handleStatChange = (index: number, field: string, value: string) => {
@@ -116,15 +85,42 @@ export default function AdminAbout() {
       ...aboutData,
       stats: [...(aboutData.stats || []), { label: 'New Stat', value: '100', icon: 'zap' }]
     });
+    toast.success('New statistic added');
   };
 
   const removeStat = (index: number) => {
-    const newStats = [...(aboutData.stats || [])];
-    newStats.splice(index, 1);
-    setAboutData({ ...aboutData, stats: newStats });
+    setDeletingType('stat');
+    setDeletingIndex(index);
+    setDeleteConfirmOpen(true);
   };
 
-  if (loading) return <div>Loading...</div>;
+  const confirmDelete = () => {
+    if (deletingIndex === null || !deletingType) return;
+
+    if (deletingType === 'team') {
+      const newTeam = [...aboutData.team];
+      newTeam.splice(deletingIndex, 1);
+      setAboutData({ ...aboutData, team: newTeam });
+      toast.success('Team member removed. Remember to save changes.');
+    } else if (deletingType === 'stat') {
+      const newStats = [...(aboutData.stats || [])];
+      newStats.splice(deletingIndex, 1);
+      setAboutData({ ...aboutData, stats: newStats });
+      toast.success('Statistic removed. Remember to save changes.');
+    }
+
+    setDeleteConfirmOpen(false);
+    setDeletingType(null);
+    setDeletingIndex(null);
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#1B2642]"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6 pb-10">
@@ -132,17 +128,11 @@ export default function AdminAbout() {
         <button 
           onClick={handleSave}
           disabled={saving}
-          className="bg-[#1B2642] text-white px-8 py-2.5 rounded-full text-sm font-bold hover:bg-[#1B2642]/90 disabled:opacity-50 transition-colors shadow-sm"
+          className="bg-[#1B2642] text-white px-8 py-2.5 rounded-full text-sm font-bold hover:bg-[#1B2642]/90 disabled:opacity-50 transition-all shadow-md active:scale-95"
         >
-          {saving ? 'Saving...' : 'Save'}
+          {saving ? 'Saving...' : 'Save Changes'}
         </button>
       </div>
-
-      {message && (
-        <div className={`p-4 rounded-xl ${message.includes('success') ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'} border ${message.includes('success') ? 'border-green-100' : 'border-red-100'} text-sm font-medium`}>
-          {message}
-        </div>
-      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Main Form Area */}
@@ -193,20 +183,24 @@ export default function AdminAbout() {
                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1">Leadership & Staff</p>
                  </div>
               </div>
-              <button onClick={addTeamMember} className="text-xs font-bold text-[#1B2642] hover:bg-gray-50 px-4 py-2 rounded-xl transition-colors border border-gray-200">
+              <button onClick={addTeamMember} className="text-xs font-bold text-[#1B2642] hover:bg-gray-50 px-4 py-2 rounded-xl transition-colors border border-gray-200 shadow-sm">
                 + ADD MEMBER
               </button>
             </div>
 
             <div className="space-y-6">
               {aboutData.team?.map((member, index) => (
-                <div key={index} className="flex flex-col gap-4 p-6 border border-gray-100 rounded-2xl relative group">
-                  <button 
-                    onClick={() => removeTeamMember(index)}
-                    className="absolute top-4 right-4 text-gray-400 hover:text-red-500 p-2 transition-colors opacity-0 group-hover:opacity-100"
-                  >
-                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
-                  </button>
+                <div key={index} className="flex flex-col gap-4 p-6 border border-gray-100 rounded-2xl relative group bg-[#F9F7F2]/50">
+                  <div className="flex justify-between items-center">
+                    <span className="text-xs font-bold text-[#1B2642] uppercase tracking-wider">Member #{index + 1}</span>
+                    <button 
+                      onClick={() => removeTeamMember(index)}
+                      className="text-gray-400 hover:text-red-500 p-1.5 transition-colors"
+                      title="Remove Member"
+                    >
+                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                    </button>
+                  </div>
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
@@ -215,7 +209,7 @@ export default function AdminAbout() {
                         type="text" 
                         value={member.name || ''} 
                         onChange={(e) => handleTeamChange(index, 'name', e.target.value)}
-                        className="w-full border border-gray-200 rounded-xl p-3.5 text-sm font-medium focus:border-[#1B2642] focus:ring-1 focus:ring-[#1B2642] text-[#1B2642]"
+                        className="w-full border border-gray-200 bg-white rounded-xl p-3.5 text-sm font-medium focus:border-[#1B2642] focus:ring-1 focus:ring-[#1B2642] text-[#1B2642]"
                       />
                     </div>
                     <div>
@@ -224,40 +218,30 @@ export default function AdminAbout() {
                         type="text" 
                         value={member.role || ''} 
                         onChange={(e) => handleTeamChange(index, 'role', e.target.value)}
-                        className="w-full border border-gray-200 rounded-xl p-3.5 text-sm font-medium focus:border-[#1B2642] focus:ring-1 focus:ring-[#1B2642] text-[#1B2642]"
+                        className="w-full border border-gray-200 bg-white rounded-xl p-3.5 text-sm font-medium focus:border-[#1B2642] focus:ring-1 focus:ring-[#1B2642] text-[#1B2642]"
                       />
                     </div>
                   </div>
 
-                  <div>
-                    <label className="block text-[10px] font-bold text-gray-400 mb-2 uppercase tracking-wider">Image Upload</label>
-                    <div className="flex items-center gap-2">
-                      <input 
-                        type="file" 
-                        onChange={(e) => uploadFile(e, index)}
-                        className="w-full text-xs text-gray-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-[#1B2642] file:text-white hover:file:bg-[#1B2642]/90 cursor-pointer"
-                        accept="image/*"
-                      />
-                    </div>
-                    {member.image && (
-                      <div className="mt-2 w-16 h-16 rounded-full overflow-hidden border border-gray-200">
-                         <img src={member.image} alt="preview" className="w-full h-full object-cover" />
-                      </div>
-                    )}
-                  </div>
+                  <FileUpload
+                    label="Member Profile Image"
+                    value={member.image || ''}
+                    onChange={(url) => handleTeamChange(index, 'image', url)}
+                    helperText="Profile photo (Square/Portrait recommended)"
+                  />
 
                   <div>
                     <label className="block text-[10px] font-bold text-gray-400 mb-2 uppercase tracking-wider">Bio</label>
                     <textarea 
                       value={member.bio || ''} 
                       onChange={(e) => handleTeamChange(index, 'bio', e.target.value)}
-                      className="w-full border border-gray-200 rounded-xl p-3.5 h-24 text-sm font-medium focus:border-[#1B2642] focus:ring-1 focus:ring-[#1B2642] text-[#1B2642]"
+                      className="w-full border border-gray-200 bg-white rounded-xl p-3.5 h-24 text-sm font-medium focus:border-[#1B2642] focus:ring-1 focus:ring-[#1B2642] text-[#1B2642]"
                     />
                   </div>
                 </div>
               ))}
               {(!aboutData.team || aboutData.team.length === 0) && (
-                <p className="text-gray-400 text-sm text-center py-4">No team members added yet.</p>
+                <p className="text-gray-400 text-sm text-center py-6">No team members added yet.</p>
               )}
             </div>
           </div>
@@ -274,21 +258,21 @@ export default function AdminAbout() {
                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1">Impact Metrics</p>
                  </div>
               </div>
-              <button onClick={addStat} className="text-xs font-bold text-[#1B2642] hover:bg-gray-50 px-4 py-2 rounded-xl transition-colors border border-gray-200">
+              <button onClick={addStat} className="text-xs font-bold text-[#1B2642] hover:bg-gray-50 px-4 py-2 rounded-xl transition-colors border border-gray-200 shadow-sm">
                 + ADD STAT
               </button>
             </div>
 
             <div className="space-y-4">
               {aboutData.stats?.map((stat, index) => (
-                <div key={index} className="flex flex-wrap md:flex-nowrap items-end gap-4 p-4 border border-gray-100 rounded-2xl">
+                <div key={index} className="flex flex-wrap md:flex-nowrap items-end gap-4 p-4 border border-gray-100 rounded-2xl bg-[#F9F7F2]/50">
                   <div className="flex-1 min-w-[150px]">
                     <label className="block text-[10px] font-bold text-gray-400 mb-2 uppercase tracking-wider">Label</label>
                     <input 
                       type="text" 
                       value={stat.label || ''} 
                       onChange={(e) => handleStatChange(index, 'label', e.target.value)}
-                      className="w-full border border-gray-200 rounded-xl p-3 text-sm font-medium focus:border-[#1B2642] focus:ring-1 focus:ring-[#1B2642] text-[#1B2642]"
+                      className="w-full border border-gray-200 bg-white rounded-xl p-3 text-sm font-medium focus:border-[#1B2642] focus:ring-1 focus:ring-[#1B2642] text-[#1B2642]"
                     />
                   </div>
                   <div className="flex-1 min-w-[100px]">
@@ -297,7 +281,7 @@ export default function AdminAbout() {
                       type="text" 
                       value={stat.value || ''} 
                       onChange={(e) => handleStatChange(index, 'value', e.target.value)}
-                      className="w-full border border-gray-200 rounded-xl p-3 text-sm font-medium focus:border-[#1B2642] focus:ring-1 focus:ring-[#1B2642] text-[#1B2642]"
+                      className="w-full border border-gray-200 bg-white rounded-xl p-3 text-sm font-medium focus:border-[#1B2642] focus:ring-1 focus:ring-[#1B2642] text-[#1B2642]"
                     />
                   </div>
                   <div className="w-24">
@@ -306,7 +290,7 @@ export default function AdminAbout() {
                       type="text" 
                       value={stat.icon || ''} 
                       onChange={(e) => handleStatChange(index, 'icon', e.target.value)}
-                      className="w-full border border-gray-200 rounded-xl p-3 text-sm font-medium focus:border-[#1B2642] focus:ring-1 focus:ring-[#1B2642] text-[#1B2642]"
+                      className="w-full border border-gray-200 bg-white rounded-xl p-3 text-sm font-medium focus:border-[#1B2642] focus:ring-1 focus:ring-[#1B2642] text-[#1B2642]"
                       placeholder="Icon"
                     />
                   </div>
@@ -319,8 +303,18 @@ export default function AdminAbout() {
                 </div>
               ))}
               {(!aboutData.stats || aboutData.stats.length === 0) && (
-                <p className="text-gray-400 text-sm text-center py-4">No statistics added yet.</p>
+                <p className="text-gray-400 text-sm text-center py-6">No statistics added yet.</p>
               )}
+            </div>
+
+            <div className="pt-6 border-t border-gray-100 flex justify-end gap-3 mt-6">
+              <button 
+                onClick={handleSave}
+                disabled={saving}
+                className="bg-[#1B2642] text-white px-8 py-3 rounded-xl text-xs font-bold hover:bg-[#1B2642]/90 disabled:opacity-50 transition-all shadow-md"
+              >
+                {saving ? 'Saving...' : 'Save Changes'}
+              </button>
             </div>
           </div>
         </div>
@@ -338,6 +332,14 @@ export default function AdminAbout() {
           </div>
         </div>
       </div>
+
+      <ConfirmModal
+        isOpen={deleteConfirmOpen}
+        onClose={() => setDeleteConfirmOpen(false)}
+        onConfirm={confirmDelete}
+        title={deletingType === 'team' ? "Remove Team Member" : "Remove Statistic"}
+        message={deletingType === 'team' ? "Are you sure you want to remove this team member? You will need to click 'Save Changes' to apply this delete to the database." : "Are you sure you want to remove this statistic? You will need to click 'Save Changes' to apply this delete to the database."}
+      />
     </div>
   );
 }
