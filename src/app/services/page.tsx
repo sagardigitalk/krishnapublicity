@@ -87,14 +87,14 @@ export default function Services() {
                 </h3>
                 
                 {/* Decorative Line */}
-                <div className="h-[2px] w-12 bg-sky-400 transition-all duration-500 group-hover:w-24 mb-4" />
+                <div className="h-[2px] w-12 bg-white transition-all duration-500 group-hover:w-24 mb-4" />
                 
                 {/* Description - slides up on hover */}
                 <p className="text-white/80 text-sm font-medium leading-relaxed max-h-0 opacity-0 overflow-hidden transition-all duration-500 group-hover:max-h-24 group-hover:opacity-100 group-hover:mb-5">
                   {service.description}
                 </p>
                 
-                <span className="text-sky-400 font-extrabold text-xs tracking-widest uppercase flex items-center gap-2 opacity-0 transform translate-y-4 transition-all duration-500 group-hover:opacity-100 group-hover:translate-y-0">
+                <span className="text-white font-extrabold text-xs tracking-widest uppercase flex items-center gap-2 opacity-0 transform translate-y-4 transition-all duration-500 group-hover:opacity-100 group-hover:translate-y-0">
                   Explore Solution 
                   <svg className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />

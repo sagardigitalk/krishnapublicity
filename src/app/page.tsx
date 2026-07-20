@@ -10,6 +10,7 @@ import Contact from "./contact/page";
 import Footer from "./Footer/page";
 import TeamSection from "@/components/TeamSection";
 import FeatureSection from "@/components/FeatureSection";
+import Marquee from "@/components/Marquee";
 
 export default function Home() {
   const { scrollYProgress } = useScroll();
@@ -41,6 +42,7 @@ export default function Home() {
 
       <Gallery />
       <Contact />
+      <Marquee />
       <Footer/>
     </div>
   );

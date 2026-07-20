@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import apiService from "@/services/apiService";
 import endPointApi from "@/services/endPointApi";
+import WordReveal from "@/components/WordReveal";
 
 const defaultFeature = {
   badge: "Welcome to Krishna Publicity",
@@ -48,8 +49,8 @@ export default function FeatureSection() {
   return (
     <section className="py-32 bg-[#F8F5F0] font-sans overflow-hidden relative">
       {/* Decorative Background Elements */}
-      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#DBA314]/10 rounded-full blur-[150px] mix-blend-multiply pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-[#0089C1]/10 rounded-full blur-[150px] mix-blend-multiply pointer-events-none" />
+      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#1B2642]/10 rounded-full blur-[150px] mix-blend-multiply pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-[#1B2642]/10 rounded-full blur-[150px] mix-blend-multiply pointer-events-none" />
 
       <div className="container max-w-7xl px-6 mx-auto relative z-10">
         <div className="flex flex-col lg:flex-row items-center gap-20">
@@ -63,24 +64,20 @@ export default function FeatureSection() {
             className="flex-1 space-y-8"
           >
             <div className="inline-flex items-center space-x-3 px-5 py-2.5 rounded-full bg-white/80 backdrop-blur-sm border border-slate-200/50 shadow-sm">
-              <div className="w-2 h-2 rounded-full bg-[#0089C1] animate-pulse" />
+              <div className="w-2 h-2 rounded-full bg-[#1B2642] animate-pulse" />
               <span className="text-xs text-[#1B2642] font-bold tracking-[0.2em] uppercase">
                 {feature.badge}
               </span>
             </div>
 
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-black text-[#1B2642] tracking-tight leading-[1.1]">
-              {feature.title.includes('Creativity') ? (
-                <>
-                  <span className="text-gradient">Creativity</span> {feature.title.replace('Creativity', '').trim()}
-                </>
-              ) : (
-                feature.title
-              )}
-            </h2>
+            <WordReveal 
+              text={feature.title} 
+              className="text-4xl md:text-5xl lg:text-6xl font-black text-[#1B2642] tracking-tight leading-[1.1]" 
+              delay={0.2}
+            />
 
             <div className="relative">
-              <div className="absolute -left-6 top-0 bottom-0 w-1 bg-gradient-to-b from-[#DBA314] to-transparent rounded-full" />
+              <div className="absolute -left-6 top-0 bottom-0 w-1 bg-gradient-to-b from-[#1B2642] to-transparent rounded-full" />
               <p className="text-[#1B2642]/80 text-lg md:text-xl font-light leading-relaxed max-w-xl pl-6">
                 {feature.description}
               </p>
@@ -106,7 +103,7 @@ export default function FeatureSection() {
             className="flex-1 w-full relative"
           >
             {/* Decorative background blob */}
-            <div className="absolute inset-0 bg-gradient-to-tr from-[#0089C1]/20 to-[#DBA314]/20 rounded-[3rem] transform rotate-3 scale-105 -z-10 blur-xl" />
+            <div className="absolute inset-0 bg-gradient-to-tr from-[#1B2642]/20 to-[#1B2642]/20 rounded-[3rem] transform rotate-3 scale-105 -z-10 blur-xl" />
             
             <div className="relative w-full aspect-[4/3] rounded-[3rem] overflow-hidden shadow-2xl glass-card ring-1 ring-white/50 group">
               <img

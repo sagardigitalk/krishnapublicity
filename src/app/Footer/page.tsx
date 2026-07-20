@@ -74,15 +74,15 @@ const Footer = () => {
               )}
               <div className="flex flex-col">
                 <span className="font-bold text-lg tracking-widest uppercase leading-tight">{settings.brandName}</span>
-                <span className="text-[#DBA314] text-xs font-semibold tracking-widest uppercase">{settings.tagline}</span>
+                <span className="text-white/70 text-xs font-semibold tracking-widest uppercase">{settings.tagline}</span>
               </div>
             </div>
             <p className="text-sm text-gray-300 uppercase tracking-widest leading-relaxed max-w-sm mt-4">
               CRAFTING THOUGHTFUL CAMPAIGNS AND EXPERIENCES BUILT ON CLARITY, PURPOSE, AND PRECISION.
             </p>
-            <a href="#services" className="text-white text-xs font-bold uppercase tracking-widest flex items-center hover:text-[#DBA314] transition-colors mt-4 w-fit group">
+            <ScrollLink to="services" smooth={true} className="text-white text-xs font-bold uppercase tracking-widest flex items-center hover:text-gray-300 transition-colors mt-4 w-fit group cursor-pointer">
               EXPLORE SERVICES <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </a>
+            </ScrollLink>
           </div>
 
           {/* Column 2: Navigation */}
@@ -119,10 +119,10 @@ const Footer = () => {
             </p>
             <div className="mt-8 flex flex-col space-y-2 lg:items-end">
               <h4 className="text-gray-400 text-xs font-semibold tracking-widest uppercase">GET IN TOUCH</h4>
-              <a href={`mailto:${settings.email}`} className="text-white hover:text-[#DBA314] transition-colors font-semibold tracking-wider text-sm">
+              <a href={`mailto:${settings.email}`} className="text-white hover:text-gray-300 transition-colors font-semibold tracking-wider text-sm">
                 {settings.email}
               </a>
-              <a href={`tel:${settings.phone.replace(/\s+/g, '')}`} className="text-white hover:text-[#DBA314] transition-colors font-semibold tracking-wider text-sm">
+              <a href={`tel:${settings.phone.replace(/\s+/g, '')}`} className="text-white hover:text-gray-300 transition-colors font-semibold tracking-wider text-sm">
                 {settings.phone}
               </a>
             </div>
@@ -132,7 +132,7 @@ const Footer = () => {
         {/* Middle Bar */}
         <div className="bg-white/5 border border-white/10 rounded-xl p-4 md:p-6 flex flex-col md:flex-row items-center justify-between gap-6 mb-8">
           <div className="flex flex-col md:flex-row items-center gap-4 text-center md:text-left">
-            <h3 className="text-[#DBA314] font-bold text-sm md:text-base tracking-widest uppercase whitespace-nowrap">
+            <h3 className="text-white font-bold text-sm md:text-base tracking-widest uppercase whitespace-nowrap">
               LOOKING FOR BRAND TRANSFORMATION?
             </h3>
             <div className="hidden md:block w-px h-6 bg-white/20"></div>
@@ -140,9 +140,9 @@ const Footer = () => {
               Explore our personalized advertising services, outdoor campaigns, and get a cost estimate.
             </p>
           </div>
-          <a href="#contact" className="bg-white text-[#1D2A44] hover:bg-gray-200 px-6 py-3 rounded-full text-xs font-bold uppercase tracking-widest whitespace-nowrap flex items-center transition-colors">
+          <ScrollLink to="contact" smooth={true} className="bg-white text-[#1D2A44] hover:bg-gray-200 px-6 py-3 rounded-full text-xs font-bold uppercase tracking-widest whitespace-nowrap flex items-center transition-colors cursor-pointer">
             EXPLORE KRISHNA PUBLICITY <ArrowRight className="ml-2 w-4 h-4" />
-          </a>
+          </ScrollLink>
         </div>
 
         {/* Huge Bottom Text */}
@@ -152,9 +152,9 @@ const Footer = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
-            className="text-5xl md:text-7xl lg:text-[7rem] font-black tracking-tighter leading-tight whitespace-nowrap"
+            className="text-5xl md:text-7xl lg:text-[7rem] font-black tracking-tighter leading-tight whitespace-nowrap flex items-center justify-center gap-2 md:gap-4"
           >
-            <span className="text-[#DBA314]">KRISHNA</span>
+            <span className="text-transparent" style={{ WebkitTextStroke: '2px rgba(255,255,255,0.8)' }}>KRISHNA</span>
             <span className="text-white">PUBLICITY</span>
           </motion.h1>
         </div>

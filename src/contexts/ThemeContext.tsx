@@ -14,7 +14,7 @@ type ColorScheme = {
 const defaultColorSchemes: ColorScheme[] = [
     {
         name: "Krishna Blue",
-        primary: "#0089c1",
+        primary: "#1B2642",
         secondary: "#3982c3",
         accent: "#ffffff",
         background: "#ffffff",
@@ -22,7 +22,7 @@ const defaultColorSchemes: ColorScheme[] = [
     },
     {
         name: "Dark Krishna",
-        primary: "#0089c1",
+        primary: "#1B2642",
         secondary: "#3982c3",
         accent: "#ffffff",
         background: "#000000",

@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import { Menu, X } from "lucide-react"
 import apiService from "@/services/apiService"
 import endPointApi from "@/services/endPointApi"
+import MagneticButton from "@/components/MagneticButton"
 
 const navItems = [
   { section: "home", label: "Home" },
@@ -103,41 +104,36 @@ export default function Navbar() {
             <div className="hidden md:flex items-center justify-center absolute left-0 right-0 pointer-events-none">
               <div className="flex space-x-6 lg:space-x-10 pointer-events-auto">
                 {navItems.map(({ section, label }) => (
-                  <ScrollLink
-                    key={section}
-                    to={section}
-                    smooth={true}
-                    duration={800}
-                    className="relative cursor-pointer group py-1"
-                  >
-                    <span className={`relative z-10 text-xs font-bold tracking-widest uppercase transition-colors duration-500 ${
-                      activeSection === section 
-                        ? (scrolled ? "text-theme-navy" : "text-white") 
-                        : (scrolled ? "text-theme-navy/60 group-hover:text-theme-navy" : "text-white/70 group-hover:text-white")
-                    }`}>
-                      {label}
-                    </span>
-                    {activeSection === section && (
-                      <motion.div
-                        layoutId="navUnderline"
-                        className={`absolute bottom-0 left-0 right-0 h-[2px] ${scrolled ? 'bg-theme-navy' : 'bg-white'}`}
-                        transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
-                      />
-                    )}
-                  </ScrollLink>
+                  <MagneticButton key={section}>
+                    <ScrollLink
+                      to={section}
+                      smooth={true}
+                      duration={800}
+                      className="relative cursor-pointer group py-1 block px-2"
+                    >
+                      <span className={`relative z-10 text-xs font-bold tracking-widest uppercase transition-colors duration-500 ${
+                        activeSection === section 
+                          ? (scrolled ? "text-theme-navy" : "text-white") 
+                          : (scrolled ? "text-theme-navy/60 group-hover:text-theme-navy" : "text-white/70 group-hover:text-white")
+                      }`}>
+                        {label}
+                      </span>
+                      {activeSection === section && (
+                        <motion.div
+                          layoutId="navUnderline"
+                          className={`absolute bottom-0 left-0 right-0 h-[2px] ${scrolled ? 'bg-theme-navy' : 'bg-white'}`}
+                          transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                        />
+                      )}
+                    </ScrollLink>
+                  </MagneticButton>
                 ))}
               </div>
             </div>
             
             {/* Desktop Right Action Area */}
             <div className="hidden md:flex items-center space-x-6 z-10">
-              <a href={`tel:${(siteSettings.phone || '+91 7878161516').replace(/\s+/g, '')}`} className={`group flex items-center justify-center space-x-2 text-xs font-bold uppercase tracking-widest border px-8 py-3 rounded-full transition-all duration-500 ${
-                scrolled 
-                  ? "border-theme-navy/20 bg-transparent text-theme-navy hover:bg-theme-navy hover:text-white"
-                  : "border-white/30 bg-white/10 backdrop-blur-md text-white hover:bg-white hover:text-theme-navy"
-              }`}>
-                <span>Let&apos;s Talk</span>
-              </a>
+              {/* Removed Let's Talk button */}
             </div>
 
             {/* Mobile Menu Button */}
@@ -194,9 +190,7 @@ export default function Navbar() {
                 </ScrollLink>
               ))}
               <div className="pt-4 mt-2 border-t border-theme-navy/10">
-                <a href="tel:+917878161516" className="flex items-center justify-center w-full space-x-2 text-xs font-bold uppercase tracking-widest border border-theme-navy text-theme-navy px-8 py-3 rounded-full hover:bg-theme-navy hover:text-white transition-all duration-300">
-                  <span>Let&apos;s Talk</span>
-                </a>
+                {/* Removed Let's Talk button */}
               </div>
             </div>
           </motion.div>

@@ -21,7 +21,7 @@ const InquiryPage = () => {
       {/* Decorative Background Blobs */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-[#1B2642]/5 rounded-full blur-[120px]" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[400px] h-[400px] bg-[#DBA314]/5 rounded-full blur-[100px]" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[400px] h-[400px] bg-[#1B2642]/5 rounded-full blur-[100px]" />
       </div>
 
       <div className="absolute top-8 left-8 z-20">
@@ -44,7 +44,7 @@ const InquiryPage = () => {
         <Card className="bg-white border-[#1B2642]/10 rounded-[2.5rem] overflow-hidden shadow-[0_20px_50px_rgba(27,38,66,0.06)]">
           <CardHeader className="bg-[#1B2642]/5 border-b border-[#1B2642]/10 p-10">
             <CardTitle className="text-4xl font-serif text-[#1B2642] tracking-tight">
-              Service <span className="text-[#DBA314]">Inquiry</span>
+              Service <span className="text-[#1B2642]">Inquiry</span>
             </CardTitle>
             <CardDescription className="text-[#1B2642]/70 text-base mt-3 leading-relaxed font-light">
               Let us know what you&apos;re looking for, and our team will get back to you with a custom premium proposal.
@@ -64,7 +64,7 @@ const InquiryPage = () => {
                 </label>
                 <Input 
                   type="text" 
-                  className="h-14 bg-slate-50 border-[#1B2642]/10 text-[#1B2642] focus:border-[#DBA314] focus:ring-1 focus:ring-[#DBA314] rounded-2xl px-5 font-medium transition-all" 
+                  className="h-14 bg-slate-50 border-[#1B2642]/10 text-[#1B2642] focus:border-[#1B2642] focus:ring-1 focus:ring-[#1B2642] rounded-2xl px-5 font-medium transition-all" 
                   placeholder="e.g. Rajesh Kumar" 
                 />
               </motion.div>
@@ -81,7 +81,7 @@ const InquiryPage = () => {
                   </label>
                   <Input 
                     type="email" 
-                    className="h-14 bg-slate-50 border-[#1B2642]/10 text-[#1B2642] focus:border-[#DBA314] focus:ring-1 focus:ring-[#DBA314] rounded-2xl px-5 font-medium transition-all" 
+                    className="h-14 bg-slate-50 border-[#1B2642]/10 text-[#1B2642] focus:border-[#1B2642] focus:ring-1 focus:ring-[#1B2642] rounded-2xl px-5 font-medium transition-all" 
                     placeholder="name@company.com" 
                   />
                 </motion.div>
@@ -97,7 +97,7 @@ const InquiryPage = () => {
                   </label>
                   <Input 
                     type="tel" 
-                    className="h-14 bg-slate-50 border-[#1B2642]/10 text-[#1B2642] focus:border-[#DBA314] focus:ring-1 focus:ring-[#DBA314] rounded-2xl px-5 font-medium transition-all" 
+                    className="h-14 bg-slate-50 border-[#1B2642]/10 text-[#1B2642] focus:border-[#1B2642] focus:ring-1 focus:ring-[#1B2642] rounded-2xl px-5 font-medium transition-all" 
                     placeholder="+91 98765 43210" 
                   />
                 </motion.div>
@@ -113,7 +113,7 @@ const InquiryPage = () => {
                   Project details / Requirements
                 </label>
                 <Textarea
-                  className="bg-slate-50 border-[#1B2642]/10 text-[#1B2642] focus:border-[#DBA314] focus:ring-1 focus:ring-[#DBA314] rounded-2xl p-5 font-medium resize-none transition-all"
+                  className="bg-slate-50 border-[#1B2642]/10 text-[#1B2642] focus:border-[#1B2642] focus:ring-1 focus:ring-[#1B2642] rounded-2xl p-5 font-medium resize-none transition-all"
                   rows={4}
                   placeholder="Tell us about your outdoor campaign goals, target locations, or sizes..."
                 />

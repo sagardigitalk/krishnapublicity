@@ -1,9 +1,10 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import MagneticButton from "@/components/MagneticButton";
 import Image from "next/image";
 import apiService from "@/services/apiService";
 import endPointApi from "@/services/endPointApi";
@@ -26,6 +27,9 @@ export default function Hero() {
     subtitle: 'Elevate your market presence with premium outdoor advertising and immersive digital campaigns crafted for impact.',
     image: ''
   });
+
+  const { scrollY } = useScroll();
+  const backgroundY = useTransform(scrollY, [0, 1000], ["0%", "30%"]);
 
   useEffect(() => {
     const fetchHeroData = async () => {
@@ -66,6 +70,7 @@ export default function Hero() {
             exit={{ opacity: 0 }}
             transition={{ duration: 1.5, ease: "easeInOut" }}
             className="absolute inset-0"
+            style={{ y: backgroundY }}
           >
             <Image
               src={activeImage}
@@ -122,21 +127,25 @@ export default function Hero() {
             transition={{ duration: 1, delay: 0.8, ease: "easeOut" }}
             className="mt-10 flex flex-col sm:flex-row items-center gap-4 sm:gap-6 w-full sm:w-auto"
           >
-            <button
-              className="group flex items-center justify-center w-full sm:w-auto h-14 px-8 rounded-full bg-white/90 backdrop-blur-sm text-black font-semibold text-sm hover:bg-white transition-all duration-300"
-            >
-              Start Campaign
-              <ArrowRight className="ml-3 w-4 h-4 text-black group-hover:translate-x-1 transition-transform duration-300" />
-            </button>
+            <MagneticButton>
+              <button
+                className="group flex items-center justify-center w-full sm:w-auto h-14 px-8 rounded-full bg-white/90 backdrop-blur-sm text-black font-semibold text-sm hover:bg-white transition-all duration-300"
+              >
+                Start Campaign
+                <ArrowRight className="ml-3 w-4 h-4 text-black group-hover:translate-x-1 transition-transform duration-300" />
+              </button>
+            </MagneticButton>
 
-            <Button
-              size="lg"
-              variant="outline"
-              className="group w-full sm:w-auto h-14 px-8 rounded-full border-white/30 text-white bg-white/5 backdrop-blur-md hover:bg-white/10 font-semibold text-sm transition-all duration-300"
-            >
-              Watch Showreel
-              <ArrowRight className="ml-3 w-4 h-4 text-white group-hover:translate-x-1 transition-transform duration-300" />
-            </Button>
+            <MagneticButton>
+              <Button
+                size="lg"
+                variant="outline"
+                className="group w-full sm:w-auto h-14 px-8 rounded-full border-white/30 text-white bg-white/5 backdrop-blur-md hover:bg-white/10 font-semibold text-sm transition-all duration-300"
+              >
+                Watch Showreel
+                <ArrowRight className="ml-3 w-4 h-4 text-white group-hover:translate-x-1 transition-transform duration-300" />
+              </Button>
+            </MagneticButton>
           </motion.div>
         </div>
 

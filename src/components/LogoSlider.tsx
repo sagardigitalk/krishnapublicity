@@ -60,7 +60,7 @@ export default function LogoSlider() {
 
     const LogoCard = ({ logo }: { logo: any }) => (
         <div className="px-3 outline-none h-full">
-            <div className="h-48 flex items-center justify-center p-4 rounded-xl bg-transparent border border-[#1b2642]/10 hover:border-[#ca8a04]/50 hover:bg-[#EFE7DE]/50 shadow-sm transition-all duration-500 group cursor-pointer overflow-hidden">
+            <div className="h-48 flex items-center justify-center p-4 rounded-xl bg-transparent border border-[#1b2642]/10 hover:border-[#1B2642]/50 hover:bg-[#EFE7DE]/50 shadow-sm transition-all duration-500 group cursor-pointer overflow-hidden">
                 <div className="relative w-full h-full flex items-center justify-center">
                     <img
                         src={logo.src}
@@ -99,7 +99,7 @@ export default function LogoSlider() {
                   .logo-swiper .swiper-button-next:hover,
                   .logo-swiper .swiper-button-prev:hover {
                     color: #ffffff;
-                    background: #ca8a04;
+                    background: #1B2642;
                   }
                 `}} />
                 <Swiper

@@ -64,7 +64,7 @@ export default function TeamSection() {
           <div className="absolute inset-0 bg-[#ffffff]/0 group-hover:bg-[#ffffff]/10 transition-all duration-300 pointer-events-none" />
         </div>
         <div className="flex flex-col items-center justify-center space-y-1 px-2">
-          <h3 className="text-lg md:text-xl font-bold text-[#1b2642] group-hover:text-[#ca8a04] transition-colors duration-300">
+          <h3 className="text-lg md:text-xl font-bold text-[#1b2642] group-hover:text-[#1B2642] transition-colors duration-300">
             {member.name}
           </h3>
           <p className="text-[#1b2642]/60 text-sm font-medium tracking-wide uppercase text-xs">
@@ -106,13 +106,13 @@ export default function TeamSection() {
           .team-swiper .swiper-button-next:hover,
           .team-swiper .swiper-button-prev:hover {
             color: #ffffff;
-            background: #ca8a04;
+            background: #1B2642;
           }
           .team-swiper .swiper-pagination-bullet {
             background: #1b2642;
           }
           .team-swiper .swiper-pagination-bullet-active {
-            background: #ca8a04;
+            background: #1B2642;
           }
         `}} />
         <Swiper
@@ -153,7 +153,7 @@ export default function TeamSection() {
           className="flex flex-col items-center text-center mb-8 px-6"
         >
           {teamHeader.subtitle && (
-            <p className="text-sm text-[#ca8a04] font-bold uppercase tracking-[0.2em] mb-4">
+            <p className="text-sm text-[#1B2642] font-bold uppercase tracking-[0.2em] mb-4">
               {teamHeader.subtitle}
             </p>
           )}

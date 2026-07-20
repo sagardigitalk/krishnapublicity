@@ -13,7 +13,7 @@
     --popover: 220 40% 19%;
     --popover-foreground: 0 0% 100%;
 
-    --primary: 43 83.3% 46.9%; /* #DBA314 (Gold) */
+    --primary: 43 83.3% 46.9%; /* #1B2642 (Gold) */
     --primary-foreground: 0 0% 100%;
 
     --secondary: 220 40% 25%;
@@ -103,10 +103,10 @@
     @apply bg-white/60 dark:bg-black/60 backdrop-blur-lg border-b border-white/20 dark:border-white/10 shadow-sm;
   }
   .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-[#0089C1] to-sky-400;
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-[#1B2642] to-[#1B2642];
   }
   .bg-gradient-premium {
-    @apply bg-gradient-to-br from-[#0089C1] to-sky-400;
+    @apply bg-gradient-to-br from-[#1B2642] to-[#1B2642];
   }
   .hover-glow:hover {
     @apply shadow-[0_0_20px_rgba(99,102,241,0.5)];

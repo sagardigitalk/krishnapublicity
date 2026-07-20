@@ -4,8 +4,10 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Users, CheckCircle, Award, ChevronLeft, ChevronRight, Zap, Target } from 'lucide-react';
 import { Button } from "@/components/ui/button";
+import AnimatedCounter from "@/components/AnimatedCounter";
 import apiService from "@/services/apiService";
 import endPointApi from "@/services/endPointApi";
+import ScrollFillText from "@/components/ScrollFillText";
 
 // Default static fallbacks
 const defaultStats = [
@@ -45,7 +47,7 @@ export default function About() {
   const [currentMember, setCurrentMember] = useState(0);
   const [aboutData, setAboutData] = useState({
     title: 'Where Creativity Meets Measurable Impact.',
-    description: 'Krishna Publicity isn’t just an advertising agency. We are architects of brand experiences, meticulously designing campaigns that resonate and convert.'
+    description: 'We are architects of brand experiences, designing campaigns that resonate and convert.'
   });
   const [teamMembers, setTeamMembers] = useState(defaultTeamMembers);
   const [stats, setStats] = useState(defaultStats);
@@ -85,8 +87,8 @@ export default function About() {
   return (
     <section id="about" className="relative py-32 bg-[#F8F5F0] overflow-hidden w-full font-sans">
       {/* Decorative Background Elements */}
-      <div className="absolute top-0 left-1/4 w-96 h-96 bg-[#0089C1]/10 rounded-full blur-[120px] mix-blend-multiply pointer-events-none" />
-      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-[#DBA314]/10 rounded-full blur-[120px] mix-blend-multiply pointer-events-none" />
+      <div className="absolute top-0 left-1/4 w-96 h-96 bg-[#1B2642]/10 rounded-full blur-[120px] mix-blend-multiply pointer-events-none" />
+      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-[#1B2642]/10 rounded-full blur-[120px] mix-blend-multiply pointer-events-none" />
 
       <div className="container max-w-7xl px-6 mx-auto relative z-10">
         {/* Section Header */}
@@ -97,7 +99,7 @@ export default function About() {
             viewport={{ once: true }}
             className="inline-flex items-center space-x-3 px-5 py-2.5 rounded-full bg-white/80 backdrop-blur-sm border border-slate-200/50 shadow-sm mb-8"
           >
-            <div className="w-2 h-2 rounded-full bg-[#DBA314] animate-pulse" />
+            <div className="w-2 h-2 rounded-full bg-[#1B2642] animate-pulse" />
             <span className="text-xs font-bold tracking-[0.3em] uppercase text-[#1B2642]">The Agency</span>
           </motion.div>
           <motion.h2 
@@ -109,7 +111,7 @@ export default function About() {
             {aboutData.title.includes('Measurable Impact.') ? (
               <>
                 Where Creativity Meets <br className="hidden md:block" />
-                <span className="text-gradient">Measurable Impact.</span>
+                <span className="text-[#1B2642]">Measurable Impact.</span>
               </>
             ) : (
               aboutData.title
@@ -128,10 +130,11 @@ export default function About() {
               transition={{ duration: 0.8 }}
               className="relative"
             >
-              <div className="absolute -left-6 top-0 bottom-0 w-1 bg-gradient-to-b from-[#0089C1] to-transparent rounded-full" />
-              <p className="text-xl md:text-2xl text-[#1B2642]/80 font-light leading-relaxed pl-6">
-                {aboutData.description}
-              </p>
+              <div className="absolute -left-6 top-0 bottom-0 w-1 bg-gradient-to-b from-[#1B2642] to-transparent rounded-full" />
+              <ScrollFillText 
+                text={aboutData.description}
+                className="text-xl md:text-2xl lg:text-3xl text-[#1B2642] font-extrabold leading-tight pl-6 mb-12"
+              />
             </motion.div>
 
             <div className="grid grid-cols-2 gap-6 pt-4">
@@ -144,14 +147,14 @@ export default function About() {
                   transition={{ delay: idx * 0.1, duration: 0.6 }}
                   className="glass-card p-6 md:p-8 rounded-[2rem] group hover:bg-white/80 transition-all duration-500 relative overflow-hidden"
                 >
-                  <div className="absolute inset-0 bg-gradient-to-br from-[#0089C1]/5 to-[#DBA314]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  <div className="absolute inset-0 bg-gradient-to-br from-[#1B2642]/5 to-[#1B2642]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                   
                   <div className="relative z-10">
                     <div className="w-14 h-14 rounded-2xl bg-white shadow-sm flex items-center justify-center mb-6 group-hover:scale-110 group-hover:shadow-md transition-all duration-500">
-                      <stat.icon className="w-7 h-7 text-[#0089C1]" />
+                      <stat.icon className="w-7 h-7 text-[#1B2642]" />
                     </div>
-                    <h3 className="text-4xl font-black text-[#1B2642] mb-3 tracking-tighter group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-[#1B2642] group-hover:to-[#0089C1] transition-all">
-                      {stat.value}
+                    <h3 className="text-4xl font-black text-[#1B2642] mb-3 tracking-tighter group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-[#1B2642] group-hover:to-[#1B2642] transition-all">
+                      <AnimatedCounter value={stat.value} />
                     </h3>
                     <p className="text-xs font-bold text-[#1B2642]/60 uppercase tracking-widest">{stat.label}</p>
                   </div>
@@ -186,7 +189,7 @@ export default function About() {
                   }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#1B2642] via-[#1B2642]/60 to-transparent" />
-                <div className="absolute inset-0 bg-gradient-to-tr from-[#0089C1]/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+                <div className="absolute inset-0 bg-gradient-to-tr from-[#1B2642]/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
               </motion.div>
             </AnimatePresence>
 
@@ -201,13 +204,13 @@ export default function About() {
                   className="space-y-5"
                 >
                   <div className="inline-flex items-center space-x-2 px-4 py-2 rounded-full glass border-white/20 text-white text-[10px] font-bold uppercase tracking-[0.2em]">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#DBA314]" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#1B2642]" />
                     <span>{activeMember?.role || "Leadership"}</span>
                   </div>
                   <h3 className="text-4xl md:text-5xl font-black text-white tracking-tight">
                     {activeMember?.name}
                   </h3>
-                  <p className="text-lg text-white/80 font-light max-w-xl leading-relaxed border-l-2 border-[#DBA314]/50 pl-4">
+                  <p className="text-lg text-white/80 font-light max-w-xl leading-relaxed border-l-2 border-[#1B2642]/50 pl-4">
                     &quot;{activeMember?.bio}&quot;
                   </p>
                 </motion.div>
@@ -234,7 +237,7 @@ export default function About() {
                   {teamMembers.map((_, idx) => (
                     <div 
                       key={idx} 
-                      className={`h-1.5 rounded-full transition-all duration-500 ease-out ${idx === currentMember ? 'w-10 bg-[#DBA314]' : 'w-3 bg-white/30 hover:bg-white/50'}`} 
+                      className={`h-1.5 rounded-full transition-all duration-500 ease-out ${idx === currentMember ? 'w-10 bg-[#1B2642]' : 'w-3 bg-white/30 hover:bg-white/50'}`} 
                     />
                   ))}
                 </div>

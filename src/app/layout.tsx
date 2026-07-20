@@ -1,6 +1,7 @@
 "use client"
 
 import Preloader from "@/components/Preloader"
+import CustomCursor from "@/components/CustomCursor"
 import { ThemeProvider } from "@/contexts/ThemeContext"
 import { ToastProvider } from "@/components/ui/use-toast"
 import { Toaster } from "react-hot-toast"
@@ -64,6 +65,7 @@ export default function RootLayout({
       <body className="font-sans">
         <Toaster position="top-right" reverseOrder={false} />
         <Preloader />
+        <CustomCursor />
         <ThemeProvider>
           <ToastProvider>
             {children}
