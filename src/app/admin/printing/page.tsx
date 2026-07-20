@@ -59,7 +59,7 @@ export default function PrintingPage() {
     if (!deleteId) return;
     try {
       await apiService.delete(`${endPointApi.printing}/${deleteId}`);
-      setEntries(entries.filter(e => e._id !== deleteId));
+      fetchPrintings();
       toast.success('રેકોર્ડ રદ થયો (Record deleted)!');
     } catch (error) {
       console.error('Error deleting printing:', error);
@@ -100,10 +100,10 @@ export default function PrintingPage() {
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-gray-50 text-gray-500 text-sm border-b border-gray-100 whitespace-nowrap">
-                <th className="px-6 py-4 font-medium">પ્રેસનું નામ</th>
-                <th className="px-6 py-4 font-medium">વિગત</th>
-                <th className="px-6 py-4 font-medium">રકમ</th>
-                <th className="px-6 py-4 font-medium">Action</th>
+                <th className="px-6 py-2.5 font-medium">પ્રેસનું નામ</th>
+                <th className="px-6 py-2.5 font-medium">વિગત</th>
+                <th className="px-6 py-2.5 font-medium">રકમ</th>
+                <th className="px-6 py-2.5 font-medium">Action</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
@@ -118,10 +118,10 @@ export default function PrintingPage() {
               ) : (
                 entries.map(entry => (
                   <tr key={entry._id} className="hover:bg-gray-50/50">
-                    <td className="px-6 py-4 font-medium text-[#1B2642]">{entry.pressName}</td>
-                    <td className="px-6 py-4 text-gray-600 max-w-[300px] truncate">{entry.details}</td>
-                    <td className="px-6 py-4 text-gray-600 font-bold">₹{entry.amount || 0}</td>
-                    <td className="px-6 py-4 flex items-center gap-2">
+                    <td className="px-6 py-2.5 font-medium text-[#1B2642]">{entry.pressName}</td>
+                    <td className="px-6 py-2.5 text-gray-600 max-w-[300px] truncate">{entry.details}</td>
+                    <td className="px-6 py-2.5 text-gray-600 font-bold">₹{entry.amount || 0}</td>
+                    <td className="px-6 py-2.5 flex items-center gap-2">
                       <Link href={`/admin/printing/edit/${entry._id}`} className="text-blue-500 hover:text-blue-700 p-2 hover:bg-blue-50 rounded-lg transition-colors">
                         <Edit className="w-4 h-4" />
                       </Link>

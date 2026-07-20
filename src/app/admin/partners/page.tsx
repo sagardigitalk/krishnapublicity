@@ -83,7 +83,7 @@ export default function AdminPartners() {
   }
 
   return (
-    <div className="space-y-6 pb-10">
+    <div className="space-y-6 pb-10 max-w-5xl mx-auto">
       <div className="flex justify-between items-center mb-6">
         <div className="flex items-center text-sm font-medium text-gray-500">
            <span>Sanctuary</span>
@@ -99,7 +99,7 @@ export default function AdminPartners() {
         </button>
       </div>
 
-      <div className="max-w-5xl space-y-6">
+      <div className="space-y-6">
         {/* Main Form Area */}
         <div className="space-y-6">
           <div className="bg-white p-8 rounded-3xl shadow-[0_4px_24px_rgba(27,38,66,0.04)] border border-gray-100/50">

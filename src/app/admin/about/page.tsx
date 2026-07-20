@@ -123,7 +123,7 @@ export default function AdminAbout() {
   }
 
   return (
-    <div className="space-y-6 pb-10">
+    <div className="space-y-6 pb-10 max-w-5xl mx-auto">
       <div className="flex justify-end items-center mb-6">
         <button 
           onClick={handleSave}
@@ -134,7 +134,7 @@ export default function AdminAbout() {
         </button>
       </div>
 
-      <div className="max-w-5xl space-y-6">
+      <div className="space-y-6">
         {/* Main Form Area */}
         <div className="space-y-6">
           

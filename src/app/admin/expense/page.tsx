@@ -59,7 +59,7 @@ export default function ExpensePage() {
     if (!deleteId) return;
     try {
       await apiService.delete(`${endPointApi.expense}/${deleteId}`);
-      setEntries(entries.filter(e => e._id !== deleteId));
+      fetchExpenses();
       toast.success('રેકોર્ડ રદ થયો (Record deleted)!');
     } catch (error) {
       console.error('Error deleting expense:', error);
@@ -100,13 +100,13 @@ export default function ExpensePage() {
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-gray-50 text-gray-500 text-sm border-b border-gray-100 whitespace-nowrap">
-                <th className="px-6 py-4 font-medium">વિગત</th>
-                <th className="px-6 py-4 font-medium">પ્રિન્ટીંગ પ્રેસ</th>
-                <th className="px-6 py-4 font-medium">તારીખ</th>
-                <th className="px-6 py-4 font-medium">ટોટલ બિલ</th>
-                <th className="px-6 py-4 font-medium">આપેલ રકમ</th>
-                <th className="px-6 py-4 font-medium text-red-600">બાકી રકમ</th>
-                <th className="px-6 py-4 font-medium">Action</th>
+                <th className="px-6 py-2.5 font-medium">વિગત</th>
+                <th className="px-6 py-2.5 font-medium">પ્રિન્ટીંગ પ્રેસ</th>
+                <th className="px-6 py-2.5 font-medium">તારીખ</th>
+                <th className="px-6 py-2.5 font-medium">ટોટલ બિલ</th>
+                <th className="px-6 py-2.5 font-medium">આપેલ રકમ</th>
+                <th className="px-6 py-2.5 font-medium text-red-600">બાકી રકમ</th>
+                <th className="px-6 py-2.5 font-medium">Action</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
@@ -121,13 +121,13 @@ export default function ExpensePage() {
               ) : (
                 entries.map(entry => (
                   <tr key={entry._id} className="hover:bg-gray-50/50">
-                    <td className="px-6 py-4 font-medium text-[#1B2642] max-w-[200px] truncate">{entry.details}</td>
-                    <td className="px-6 py-4 text-gray-600">{entry.printingPress}</td>
-                    <td className="px-6 py-4 text-gray-600">{entry.date}</td>
-                    <td className="px-6 py-4 text-gray-600 font-bold">₹{entry.totalBill || 0}</td>
-                    <td className="px-6 py-4 text-green-600 font-bold">₹{entry.givenAmount || 0}</td>
-                    <td className="px-6 py-4 text-red-600 font-bold">₹{entry.pendingAmount || 0}</td>
-                    <td className="px-6 py-4 flex items-center gap-2">
+                    <td className="px-6 py-2.5 font-medium text-[#1B2642] max-w-[200px] truncate">{entry.details}</td>
+                    <td className="px-6 py-2.5 text-gray-600">{entry.printingPress}</td>
+                    <td className="px-6 py-2.5 text-gray-600">{entry.date ? entry.date.split('-').reverse().join('/') : ''}</td>
+                    <td className="px-6 py-2.5 text-gray-600 font-bold">₹{entry.totalBill || 0}</td>
+                    <td className="px-6 py-2.5 text-green-600 font-bold">₹{entry.givenAmount || 0}</td>
+                    <td className="px-6 py-2.5 text-red-600 font-bold">₹{entry.pendingAmount || 0}</td>
+                    <td className="px-6 py-2.5 flex items-center gap-2">
                       <Link href={`/admin/expense/edit/${entry._id}`} className="text-blue-500 hover:text-blue-700 p-2 hover:bg-blue-50 rounded-lg transition-colors">
                         <Edit className="w-4 h-4" />
                       </Link>

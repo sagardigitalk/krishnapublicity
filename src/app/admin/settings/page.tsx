@@ -91,7 +91,7 @@ export default function AdminSettings() {
   }
 
   return (
-    <div className="space-y-6 pb-10">
+    <div className="space-y-6 pb-10 max-w-5xl mx-auto">
       <div className="flex justify-between items-center mb-6">
         <div className="flex items-center text-sm font-medium text-gray-500">
           <span>Sanctuary</span>
@@ -107,7 +107,7 @@ export default function AdminSettings() {
         </button>
       </div>
 
-      <div className="max-w-5xl space-y-6">
+      <div className="space-y-6">
         {/* Main Form Area */}
         <div className="space-y-6">
 
