@@ -28,7 +28,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
         <div className="flex gap-4 w-full justify-center">
           <Button
             variant="outline"
-            className="flex-1 max-w-[150px] border-gray-200 hover:bg-gray-50 text-gray-700 h-12 rounded-xl"
+            className="flex-1 max-w-[150px] border-gray-200 hover:bg-gray-50 text-gray-700 hover:text-gray-900 h-12 rounded-xl"
             onClick={onClose}
           >
             Cancel

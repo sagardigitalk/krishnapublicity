@@ -20,6 +20,11 @@ export interface EndPointApi {
 
   // Upload
   upload: string;
+
+  // Accounting
+  income: string;
+  expense: string;
+  printing: string;
 }
 
 const endPointApi: EndPointApi = {
@@ -43,6 +48,11 @@ const endPointApi: EndPointApi = {
 
   // Upload
   upload: 'upload',
+
+  // Accounting
+  income: 'income',
+  expense: 'expense',
+  printing: 'printing',
 };
 
 export default endPointApi;

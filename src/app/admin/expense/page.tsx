@@ -1,0 +1,164 @@
+'use client';
+import { useState, useEffect } from 'react';
+import { Plus, Trash2, Edit } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import apiService from '@/services/apiService';
+import endPointApi from '@/services/endPointApi';
+import Link from 'next/link';
+import toast from 'react-hot-toast';
+import dynamic from 'next/dynamic';
+import Pagination from '@/components/Pagination';
+import ConfirmModal from '@/components/admin/ConfirmModal';
+import { DateRangePicker } from '@/components/DateRangePicker';
+export default function ExpensePage() {
+  const [entries, setEntries] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [totalPages, setTotalPages] = useState(0);
+  const [totalRecords, setTotalRecords] = useState(0);
+
+  const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
+  const [dateValue, setDateValue] = useState<{startDate: string | null, endDate: string | null}>(() => {
+    const d = new Date();
+    const today = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    return { startDate: today, endDate: today };
+  });
+
+  const fetchExpenses = async () => {
+    try {
+      setLoading(true);
+      let query = `?page=${currentPage}&limit=${pageSize}`;
+      if (dateValue.startDate && dateValue.endDate) {
+        query += `&startDate=${dateValue.startDate}&endDate=${dateValue.endDate}`;
+      }
+      
+      const data = await apiService.get(`${endPointApi.expense}${query}`);
+      if (data && data.data) {
+        setEntries(data.data);
+        setTotalPages(data.totalPages);
+        setTotalRecords(data.totalRecords);
+      } else if (Array.isArray(data)) { // fallback
+        setEntries(data);
+      }
+    } catch (error) {
+      console.error('Error fetching expenses:', error);
+      toast.error('ડેટા લાવવામાં ભૂલ આવી (Error fetching data)');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchExpenses();
+  }, [currentPage, pageSize, dateValue]);
+
+  const handleDelete = async () => {
+    if (!deleteId) return;
+    try {
+      await apiService.delete(`${endPointApi.expense}/${deleteId}`);
+      setEntries(entries.filter(e => e._id !== deleteId));
+      toast.success('રેકોર્ડ રદ થયો (Record deleted)!');
+    } catch (error) {
+      console.error('Error deleting expense:', error);
+      toast.error('રેકોર્ડ ડિલીટ કરવામાં ભૂલ (Error deleting)');
+    } finally {
+      setIsDeleteModalOpen(false);
+      setDeleteId(null);
+    }
+  };
+
+  return (
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <div>
+          <h2 className="text-2xl font-bold text-[#1B2642]">જાવક (Expense)</h2>
+          <p className="text-sm text-gray-500 mt-1">જાવકની વિગતો જુઓ અને મેનેજ કરો</p>
+        </div>
+        <Link href="/admin/expense/add" className="px-6 py-2 bg-[#1B2642] text-white rounded-xl hover:bg-[#1B2642]/90 flex items-center gap-2">
+          <Plus className="w-4 h-4" /> નવી એન્ટ્રી (New Entry)
+        </Link>
+      </div>
+
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col h-full">
+        <div className="p-4 border-b border-gray-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <h3 className="text-lg font-bold text-[#1B2642]">જાવક લિસ્ટ (Expense List)</h3>
+          <div className="w-full sm:w-64 relative z-20">
+            <DateRangePicker
+              startDate={dateValue.startDate}
+              endDate={dateValue.endDate}
+              onChange={(start, end) => {
+                setDateValue({ startDate: start, endDate: end });
+                setCurrentPage(1);
+              }}
+            />
+          </div>
+        </div>
+        <div className="overflow-x-auto min-h-[300px]">
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="bg-gray-50 text-gray-500 text-sm border-b border-gray-100 whitespace-nowrap">
+                <th className="px-6 py-4 font-medium">વિગત</th>
+                <th className="px-6 py-4 font-medium">પ્રિન્ટીંગ પ્રેસ</th>
+                <th className="px-6 py-4 font-medium">તારીખ</th>
+                <th className="px-6 py-4 font-medium">ટોટલ બિલ</th>
+                <th className="px-6 py-4 font-medium">આપેલ રકમ</th>
+                <th className="px-6 py-4 font-medium text-red-600">બાકી રકમ</th>
+                <th className="px-6 py-4 font-medium">Action</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-100">
+              {loading ? (
+                <tr>
+                  <td colSpan={7} className="px-6 py-8 text-center text-gray-400">Loading...</td>
+                </tr>
+              ) : entries.length === 0 ? (
+                <tr>
+                  <td colSpan={7} className="px-6 py-8 text-center text-gray-400">કોઈ ડેટા નથી (No Data Found)</td>
+                </tr>
+              ) : (
+                entries.map(entry => (
+                  <tr key={entry._id} className="hover:bg-gray-50/50">
+                    <td className="px-6 py-4 font-medium text-[#1B2642] max-w-[200px] truncate">{entry.details}</td>
+                    <td className="px-6 py-4 text-gray-600">{entry.printingPress}</td>
+                    <td className="px-6 py-4 text-gray-600">{entry.date}</td>
+                    <td className="px-6 py-4 text-gray-600 font-bold">₹{entry.totalBill || 0}</td>
+                    <td className="px-6 py-4 text-green-600 font-bold">₹{entry.givenAmount || 0}</td>
+                    <td className="px-6 py-4 text-red-600 font-bold">₹{entry.pendingAmount || 0}</td>
+                    <td className="px-6 py-4 flex items-center gap-2">
+                      <Link href={`/admin/expense/edit/${entry._id}`} className="text-blue-500 hover:text-blue-700 p-2 hover:bg-blue-50 rounded-lg transition-colors">
+                        <Edit className="w-4 h-4" />
+                      </Link>
+                      <button onClick={() => { setDeleteId(entry._id); setIsDeleteModalOpen(true); }} className="text-red-500 hover:text-red-700 p-2 hover:bg-red-50 rounded-lg transition-colors">
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+        
+        <Pagination 
+          currentPage={currentPage}
+          totalPages={totalPages}
+          pageSize={pageSize}
+          totalRecords={totalRecords}
+          onPageChange={setCurrentPage}
+          onPageSizeChange={(size) => { setPageSize(size); setCurrentPage(1); }}
+        />
+      </div>
+
+      <ConfirmModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => { setIsDeleteModalOpen(false); setDeleteId(null); }}
+        onConfirm={handleDelete}
+        title="રેકોર્ડ કાઢી નાખો (Delete Record)"
+        message="શું તમે ખરેખર આ રેકોર્ડ કાઢી નાખવા માંગો છો? આ પ્રક્રિયા રદ કરી શકાતી નથી."
+      />
+    </div>
+  );
+}

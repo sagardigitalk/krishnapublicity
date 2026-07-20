@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
-import { LayoutDashboard, Home as HomeIcon, Info, LogOut, Menu, X, Users, Settings as SettingsIcon, MapPin, Sparkles, Palette } from 'lucide-react';
+import { LayoutDashboard, Home as HomeIcon, Info, LogOut, Menu, X, Users, Settings as SettingsIcon, MapPin, Sparkles, Palette, Banknote, Wallet, Printer } from 'lucide-react';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -56,6 +56,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { name: 'Site Settings', href: '/admin/settings', icon: SettingsIcon },
   ];
 
+  const accountingItems = [
+    { name: 'આવક (Income)', href: '/admin/income', icon: Banknote },
+    { name: 'જાવક (Expense)', href: '/admin/expense', icon: Wallet },
+    { name: 'પ્રિન્ટીંગ (Printing)', href: '/admin/printing', icon: Printer },
+  ];
+
   return (
     <div className="flex h-screen bg-theme-cream font-sans">
       {/* Sidebar */}
@@ -76,6 +82,23 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <nav className="flex-1 p-4 space-y-2 mt-4">
           <div className="text-[10px] font-bold text-white/40 uppercase tracking-wider mb-4 px-4">Management</div>
           {navItems.map((item) => {
+            const isActive = pathname === item.href;
+            return (
+              <Link 
+                key={item.name} 
+                href={item.href}
+                className={`flex items-center space-x-3 px-4 py-3 rounded-xl transition-colors ${
+                  isActive ? 'bg-theme-cream text-[#1B2642] shadow-md' : 'text-white/60 hover:bg-white/10 hover:text-white'
+                }`}
+              >
+                <item.icon className="w-5 h-5" />
+                <span className="font-semibold text-sm">{item.name}</span>
+              </Link>
+            );
+          })}
+          
+          <div className="text-[10px] font-bold text-white/40 uppercase tracking-wider mb-4 px-4 mt-8">Accounting (હિસાબ)</div>
+          {accountingItems.map((item) => {
             const isActive = pathname === item.href;
             return (
               <Link 
@@ -121,7 +144,15 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
              <span className="text-gray-400">Sanctuary</span>
              <span className="mx-3 text-gray-300">&gt;</span>
              <span className="text-[#1B2642] font-bold">
-               {pathname === '/admin' ? 'Dashboard' : pathname === '/admin/home' ? 'Home Page Management' : pathname === '/admin/about' ? 'About Page Management' : pathname === '/admin/team' ? 'Team & Advertising Family' : pathname === '/admin/settings' ? 'Site Settings & Logo' : 'Partners Gallery'}
+               {pathname === '/admin' ? 'Dashboard' 
+                : pathname === '/admin/home' ? 'Home Page Management' 
+                : pathname === '/admin/about' ? 'About Page Management' 
+                : pathname === '/admin/team' ? 'Team & Advertising Family' 
+                : pathname === '/admin/settings' ? 'Site Settings & Logo' 
+                : pathname === '/admin/income' ? 'Income (આવક)' 
+                : pathname === '/admin/expense' ? 'Expense (જાવક)' 
+                : pathname === '/admin/printing' ? 'Printing (પ્રિન્ટીંગ)' 
+                : 'Partners Gallery'}
              </span>
           </div>
           
@@ -159,7 +190,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </header>
 
         <main className="flex-1 overflow-y-auto min-h-0 p-6 md:p-8 pt-10" data-lenis-prevent="true">
-          <div className="max-w-6xl mx-auto text-black">
+          <div className="w-full max-w-[1600px] mx-auto text-black">
             {children}
           </div>
         </main>
