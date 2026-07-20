@@ -37,10 +37,18 @@ export default function LogoSlider() {
             try {
                 const data = await apiService.get(endPointApi.partners);
                 if (Array.isArray(data) && data.length > 0) {
-                    const mappedLogos = data.map((p: any, idx: number) => ({
+                    let mappedLogos = data.map((p: any, idx: number) => ({
                         src: resolveLogoUrl(p.image, idx),
                         alt: p.name || `Partner ${idx + 1}`
                     }));
+                    
+                    // Duplicate logos to ensure Swiper's loop has enough slides to scroll continuously
+                    if (mappedLogos.length > 0 && mappedLogos.length < 10) {
+                        const original = [...mappedLogos];
+                        while (mappedLogos.length < 10) {
+                            mappedLogos = [...mappedLogos, ...original];
+                        }
+                    }
                     setLogos(mappedLogos);
                 }
             } catch (error) {
@@ -98,10 +106,11 @@ export default function LogoSlider() {
                     modules={[Navigation, Autoplay]}
                     spaceBetween={0}
                     slidesPerView={1}
-                    loop={logos.length > 1}
-                    navigation={logos.length > 1}
+                    loop={logos.length > 2}
+                    navigation={false}
                     speed={3000}
-                    autoplay={logos.length > 1 ? { delay: 0, disableOnInteraction: false, reverseDirection: true } : false}
+                    autoplay={logos.length > 2 ? { delay: 0, disableOnInteraction: false } : false}
+                    allowTouchMove={true}
                     breakpoints={{
                         480: { slidesPerView: Math.min(2, logos.length) },
                         768: { slidesPerView: Math.min(3, logos.length) },
