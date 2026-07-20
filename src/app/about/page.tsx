@@ -83,51 +83,58 @@ export default function About() {
   const memberImg = getMemberImage(activeMember?.image, currentMember);
 
   return (
-    <section id="about" className="relative py-24 bg-theme-cream overflow-hidden w-full">
+    <section id="about" className="relative py-32 bg-[#F8F5F0] overflow-hidden w-full font-sans">
+      {/* Decorative Background Elements */}
+      <div className="absolute top-0 left-1/4 w-96 h-96 bg-[#0089C1]/10 rounded-full blur-[120px] mix-blend-multiply pointer-events-none" />
+      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-[#DBA314]/10 rounded-full blur-[120px] mix-blend-multiply pointer-events-none" />
+
       <div className="container max-w-7xl px-6 mx-auto relative z-10">
         {/* Section Header */}
-        <div className="flex flex-col items-center text-center mb-16">
+        <div className="flex flex-col items-center text-center mb-24">
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
-            className="inline-flex items-center space-x-2 px-4 py-2 rounded-full border border-theme-navy/10 text-theme-navy mb-6"
+            className="inline-flex items-center space-x-3 px-5 py-2.5 rounded-full bg-white/80 backdrop-blur-sm border border-slate-200/50 shadow-sm mb-8"
           >
-            <Target className="w-3 h-3" />
-            <span className="text-[10px] font-bold tracking-[0.3em] uppercase">The Agency</span>
+            <div className="w-2 h-2 rounded-full bg-[#DBA314] animate-pulse" />
+            <span className="text-xs font-bold tracking-[0.3em] uppercase text-[#1B2642]">The Agency</span>
           </motion.div>
           <motion.h2 
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="font-serif text-3xl md:text-4xl lg:text-5xl font-extrabold text-theme-navy tracking-tighter leading-tight"
+            className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-[#1B2642] tracking-tight leading-[1.1] max-w-4xl"
           >
-            {aboutData.title.split('Meets').map((part, i, arr) => (
-              <React.Fragment key={i}>
-                {part}{i === 0 && arr.length > 1 && 'Meets '}
-                {i === 0 && arr.length > 1 && <br />}
-              </React.Fragment>
-            ))}
+            {aboutData.title.includes('Measurable Impact.') ? (
+              <>
+                Where Creativity Meets <br className="hidden md:block" />
+                <span className="text-gradient">Measurable Impact.</span>
+              </>
+            ) : (
+              aboutData.title
+            )}
           </motion.h2>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
+        <div className="grid lg:grid-cols-12 gap-16 items-center">
           
           {/* Left: About Text & Stats */}
-          <div className="space-y-12">
+          <div className="lg:col-span-5 space-y-12">
             <motion.div
               initial={{ opacity: 0, x: -30 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8 }}
-              className="space-y-6"
+              className="relative"
             >
-              <p className="text-xl md:text-2xl text-theme-navy/80 font-light leading-relaxed">
+              <div className="absolute -left-6 top-0 bottom-0 w-1 bg-gradient-to-b from-[#0089C1] to-transparent rounded-full" />
+              <p className="text-xl md:text-2xl text-[#1B2642]/80 font-light leading-relaxed pl-6">
                 {aboutData.description}
               </p>
             </motion.div>
 
-            <div className="grid grid-cols-2 gap-6">
+            <div className="grid grid-cols-2 gap-6 pt-4">
               {stats.map((stat, idx) => (
                 <motion.div 
                   key={idx} 
@@ -135,15 +142,19 @@ export default function About() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: idx * 0.1, duration: 0.6 }}
-                  className="bg-white border border-theme-navy/10 p-6 md:p-8 rounded-[2rem] group hover:shadow-lg hover:-translate-y-2 transition-all duration-300"
+                  className="glass-card p-6 md:p-8 rounded-[2rem] group hover:bg-white/80 transition-all duration-500 relative overflow-hidden"
                 >
-                  <div className="w-12 h-12 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center mb-6 group-hover:scale-110 group-hover:border-theme-navy/20 transition-all duration-300">
-                    <stat.icon className="w-6 h-6 text-theme-navy/50 group-hover:text-theme-navy transition-colors" />
+                  <div className="absolute inset-0 bg-gradient-to-br from-[#0089C1]/5 to-[#DBA314]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  
+                  <div className="relative z-10">
+                    <div className="w-14 h-14 rounded-2xl bg-white shadow-sm flex items-center justify-center mb-6 group-hover:scale-110 group-hover:shadow-md transition-all duration-500">
+                      <stat.icon className="w-7 h-7 text-[#0089C1]" />
+                    </div>
+                    <h3 className="text-4xl font-black text-[#1B2642] mb-3 tracking-tighter group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-[#1B2642] group-hover:to-[#0089C1] transition-all">
+                      {stat.value}
+                    </h3>
+                    <p className="text-xs font-bold text-[#1B2642]/60 uppercase tracking-widest">{stat.label}</p>
                   </div>
-                  <h3 className="text-3xl font-bold text-theme-navy mb-2 tracking-tight">
-                    {stat.value}
-                  </h3>
-                  <p className="text-xs font-bold text-theme-navy/50 uppercase tracking-widest">{stat.label}</p>
                 </motion.div>
               ))}
             </div>
@@ -155,7 +166,7 @@ export default function About() {
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
-            className="relative h-[600px] w-full rounded-[3rem] overflow-hidden group shadow-xl bg-slate-900"
+            className="lg:col-span-7 relative h-[650px] w-full rounded-[3rem] overflow-hidden group shadow-2xl bg-slate-900 ring-1 ring-white/20"
           >
             <AnimatePresence mode="wait">
               <motion.div
@@ -163,65 +174,67 @@ export default function About() {
                 initial={{ opacity: 0, scale: 1.05 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0 }}
-                transition={{ duration: 0.6 }}
+                transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
                 className="absolute inset-0"
               >
                 <img 
                   src={memberImg} 
                   alt={activeMember?.name || "Team Member"} 
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  className="w-full h-full object-cover transition-transform duration-[1.5s] ease-out group-hover:scale-110"
                   onError={(e) => {
                     (e.target as HTMLImageElement).src = '/main1.jpg';
                   }}
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#1B2642]/95 via-[#1B2642]/40 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#1B2642] via-[#1B2642]/60 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-tr from-[#0089C1]/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
               </motion.div>
             </AnimatePresence>
 
-            <div className="absolute inset-0 p-10 flex flex-col justify-end z-10">
+            <div className="absolute inset-0 p-10 md:p-12 flex flex-col justify-end z-10">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={currentMember}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
-                  transition={{ duration: 0.4, delay: 0.2 }}
-                  className="space-y-4"
+                  transition={{ duration: 0.5, delay: 0.2 }}
+                  className="space-y-5"
                 >
-                  <div className="inline-block px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white text-[10px] font-bold uppercase tracking-[0.2em]">
-                    {activeMember?.role || "Leadership"}
+                  <div className="inline-flex items-center space-x-2 px-4 py-2 rounded-full glass border-white/20 text-white text-[10px] font-bold uppercase tracking-[0.2em]">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#DBA314]" />
+                    <span>{activeMember?.role || "Leadership"}</span>
                   </div>
-                  <h3 className="text-3xl font-bold text-white">
+                  <h3 className="text-4xl md:text-5xl font-black text-white tracking-tight">
                     {activeMember?.name}
                   </h3>
-                  <p className="text-base text-white/80 font-light max-w-md leading-relaxed">
+                  <p className="text-lg text-white/80 font-light max-w-xl leading-relaxed border-l-2 border-[#DBA314]/50 pl-4">
                     &quot;{activeMember?.bio}&quot;
                   </p>
                 </motion.div>
               </AnimatePresence>
 
-              <div className="flex items-center space-x-4 mt-8">
+              <div className="flex items-center space-x-4 mt-10">
                 <Button 
                   variant="outline" 
                   size="icon" 
                   onClick={prevMember} 
-                  className="w-12 h-12 rounded-full border-white/20 bg-white/10 hover:bg-white text-white hover:text-theme-navy backdrop-blur-md transition-all"
+                  className="w-14 h-14 rounded-full border-white/20 glass text-white hover:bg-white hover:text-[#1B2642] transition-all duration-300 shadow-lg"
                 >
-                  <ChevronLeft className="w-5 h-5" />
+                  <ChevronLeft className="w-6 h-6" />
                 </Button>
                 <Button 
                   variant="outline" 
                   size="icon" 
                   onClick={nextMember} 
-                  className="w-12 h-12 rounded-full border-white/20 bg-white/10 hover:bg-white text-white hover:text-theme-navy backdrop-blur-md transition-all"
+                  className="w-14 h-14 rounded-full border-white/20 glass text-white hover:bg-white hover:text-[#1B2642] transition-all duration-300 shadow-lg"
                 >
-                  <ChevronRight className="w-5 h-5" />
+                  <ChevronRight className="w-6 h-6" />
                 </Button>
-                <div className="flex-1 flex justify-end space-x-2">
+                <div className="flex-1 flex justify-end space-x-3 items-center">
                   {teamMembers.map((_, idx) => (
                     <div 
                       key={idx} 
-                      className={`h-2 rounded-full transition-all duration-300 ${idx === currentMember ? 'w-8 bg-white' : 'w-2 bg-white/30'}`} 
+                      className={`h-1.5 rounded-full transition-all duration-500 ease-out ${idx === currentMember ? 'w-10 bg-[#DBA314]' : 'w-3 bg-white/30 hover:bg-white/50'}`} 
                     />
                   ))}
                 </div>

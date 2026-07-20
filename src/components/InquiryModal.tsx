@@ -55,7 +55,12 @@ const InquiryModal: React.FC<InquiryModalProps> = ({
 
     const newErrors: Partial<Record<keyof FormData, string>> = {};
     if (!formData.name) newErrors.name = "Name is required.";
-    if (!formData.email) newErrors.email = "Email is required.";
+    const emailRegex = /^[A-Z0-9._%+-]+@(?!.*(.)\1{3,})[A-Z0-9-]+(\.[A-Z0-9-]+)*\.[A-Z]{2,}$/i;
+    if (!formData.email) {
+      newErrors.email = "Email is required.";
+    } else if (!emailRegex.test(formData.email)) {
+      newErrors.email = "Invalid email format.";
+    }
     if (!formData.phone) newErrors.phone = "Phone is required.";
     if (!formData.message) newErrors.message = "Message is required.";
 

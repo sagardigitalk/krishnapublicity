@@ -1,10 +1,14 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import Image from "next/image";
 import { motion } from "framer-motion";
 import apiService from "@/services/apiService";
 import endPointApi from "@/services/endPointApi";
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Navigation, Pagination, Autoplay } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
 
 const getMemberImage = (imagePath?: string, index: number = 0) => {
   const defaultImages = ['/main1.jpg', '/main2.jpg', '/main3.jpg'];
@@ -38,9 +42,107 @@ export default function TeamSection() {
     fetchTeam();
   }, []);
 
+  const MemberCard = ({ member, idx }: { member: any; idx: number }) => {
+    const memberImg = getMemberImage(member.image, idx);
+    return (
+      <motion.div 
+        initial={{ opacity: 0, y: 40 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ delay: (idx % 5) * 0.1, duration: 0.5 }}
+        className="flex flex-col items-center group cursor-pointer text-center w-full"
+      >
+        <div className="w-full aspect-[3/4] relative overflow-hidden mb-5 bg-[#EFE7DE]">
+          <img
+            src={memberImg}
+            alt={member.name}
+            className="w-full h-full object-cover transition-transform duration-700 ease-in-out group-hover:scale-105"
+            onError={(e) => {
+              (e.target as HTMLImageElement).src = '/main1.jpg';
+            }}
+          />
+          <div className="absolute inset-0 bg-[#ffffff]/0 group-hover:bg-[#ffffff]/10 transition-all duration-300 pointer-events-none" />
+        </div>
+        <div className="flex flex-col items-center justify-center space-y-1 px-2">
+          <h3 className="text-lg md:text-xl font-bold text-[#1b2642] group-hover:text-[#ca8a04] transition-colors duration-300">
+            {member.name}
+          </h3>
+          <p className="text-[#1b2642]/60 text-sm font-medium tracking-wide uppercase text-xs">
+            {member.role}
+          </p>
+        </div>
+      </motion.div>
+    );
+  };
+
+  const renderMembers = () => {
+    if (teamMembers.length <= 5) {
+      return (
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-x-6 gap-y-12 mt-12 max-w-7xl mx-auto justify-center px-4">
+          {teamMembers.map((member, idx) => (
+            <MemberCard key={idx} member={member} idx={idx} />
+          ))}
+        </div>
+      );
+    }
+
+    return (
+      <div className="mt-12 max-w-7xl mx-auto px-4 relative team-swiper">
+        <style dangerouslySetInnerHTML={{__html: `
+          .team-swiper .swiper-button-next,
+          .team-swiper .swiper-button-prev {
+            color: #1b2642;
+            background: #ffffff;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+          }
+          .team-swiper .swiper-button-next:after,
+          .team-swiper .swiper-button-prev:after {
+            font-size: 16px;
+            font-weight: bold;
+          }
+          .team-swiper .swiper-button-next:hover,
+          .team-swiper .swiper-button-prev:hover {
+            color: #ffffff;
+            background: #ca8a04;
+          }
+          .team-swiper .swiper-pagination-bullet {
+            background: #1b2642;
+          }
+          .team-swiper .swiper-pagination-bullet-active {
+            background: #ca8a04;
+          }
+        `}} />
+        <Swiper
+          modules={[Navigation, Pagination, Autoplay]}
+          spaceBetween={24}
+          slidesPerView={1}
+          navigation
+          pagination={{ clickable: true, dynamicBullets: true }}
+          autoplay={{ delay: 3000, disableOnInteraction: false }}
+          breakpoints={{
+            480: { slidesPerView: 2 },
+            768: { slidesPerView: 3 },
+            1024: { slidesPerView: 4 },
+            1280: { slidesPerView: 5 },
+          }}
+          className="pb-16 pt-4 px-4"
+        >
+          {teamMembers.map((member, idx) => (
+            <SwiperSlide key={idx}>
+              <MemberCard member={member} idx={idx} />
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      </div>
+    );
+  };
+
   return (
-    <section className="py-24 bg-white font-sans overflow-hidden">
-      <div className="container max-w-7xl px-6 mx-auto">
+    <section className="py-24 bg-[#F8F5F0] font-sans overflow-hidden">
+      <div className="container max-w-screen-2xl mx-auto">
         
         {/* Section Header */}
         <motion.div 
@@ -48,77 +150,26 @@ export default function TeamSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="flex flex-col items-center text-center mb-16"
+          className="flex flex-col items-center text-center mb-8 px-6"
         >
           {teamHeader.subtitle && (
-            <p className="text-sm text-theme-navy/60 font-medium mb-4">
+            <p className="text-sm text-[#ca8a04] font-bold uppercase tracking-[0.2em] mb-4">
               {teamHeader.subtitle}
             </p>
           )}
           {teamHeader.title && (
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-theme-navy tracking-tight mb-6 max-w-3xl leading-[1.2]">
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#1b2642] tracking-tight mb-6 max-w-3xl leading-[1.2]">
               {teamHeader.title}
             </h2>
           )}
           {teamHeader.description && (
-            <p className="text-theme-navy/50 text-sm md:text-base max-w-2xl font-light">
+            <p className="text-[#1b2642]/70 text-sm md:text-base max-w-2xl font-light">
               {teamHeader.description}
             </p>
           )}
         </motion.div>
 
-        {/* Team Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-x-12 gap-y-16 mt-12 max-w-4xl mx-auto">
-          {teamMembers.map((member, idx) => {
-            const memberImg = getMemberImage(member.image, idx);
-            return (
-              <motion.div 
-                key={idx} 
-                initial={{ opacity: 0, y: 40 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: idx * 0.2, duration: 0.6 }}
-                className="flex flex-col items-center group cursor-pointer text-center"
-              >
-                
-                {/* Image Container */}
-                <div className="w-full aspect-[3/4] relative overflow-hidden mb-6 rounded-2xl shadow-md transition-all duration-500 group-hover:shadow-2xl bg-gray-100">
-                  <img
-                    src={memberImg}
-                    alt={member.name}
-                    className="w-full h-full object-cover transition-transform duration-700 ease-in-out group-hover:scale-110"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).src = '/main1.jpg';
-                    }}
-                  />
-                </div>
-
-              {/* Name with Brush Stroke Hover */}
-              <div className="relative mb-2 px-8 py-2 w-full flex justify-center">
-                {/* Custom SVG Brush Stroke Background (Shows on Hover) */}
-                <svg 
-                  className="absolute inset-0 w-full h-full text-theme-navy opacity-0 group-hover:opacity-100 transition-all duration-300 transform scale-90 group-hover:scale-100 z-0"
-                  preserveAspectRatio="none" 
-                  viewBox="0 0 100 100" 
-                  fill="currentColor"
-                >
-                  <path d="M3,50 C3,30 15,25 30,35 C50,50 70,25 85,35 C97,45 97,70 85,80 C70,90 50,70 30,85 C15,95 3,70 3,50 Z" />
-                </svg>
-                
-                <h3 className="relative z-10 text-lg md:text-xl font-bold text-theme-navy group-hover:text-white transition-colors duration-300">
-                  {member.name}
-                </h3>
-              </div>
-
-              {/* Role */}
-              <p className="text-theme-navy/60 text-sm font-medium tracking-wide">
-                {member.role}
-              </p>
-
-            </motion.div>
-            );
-          })}
-        </div>
+        {renderMembers()}
 
       </div>
     </section>

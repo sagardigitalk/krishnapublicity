@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 
 export default function Gallery() {
   return (
-    <section id="gallery" className="py-12 bg-theme-cream relative overflow-hidden w-full">
+    <section id="gallery" className="py-12 bg-[#F8F5F0] relative overflow-hidden w-full">
 
       <div className="w-full relative z-10 px-6 lg:px-16 mx-auto">
         <motion.div

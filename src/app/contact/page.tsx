@@ -43,7 +43,7 @@ const Contact = () => {
   }, []);
 
   return (
-    <section id="contact" className="py-12 bg-theme-cream relative w-full">
+    <section id="contact" className="py-12 bg-[#F8F5F0] relative w-full">
       <div className="container max-w-7xl px-6 mx-auto relative z-10">
         <motion.div
           className="text-center mb-16"

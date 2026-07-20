@@ -46,9 +46,13 @@ export default function FeatureSection() {
   const featureImg = resolveImageUrl(feature.image);
 
   return (
-    <section className="py-24 bg-slate-50 font-sans overflow-hidden">
-      <div className="container max-w-7xl px-6 mx-auto">
-        <div className="flex flex-col lg:flex-row items-center gap-16">
+    <section className="py-32 bg-[#F8F5F0] font-sans overflow-hidden relative">
+      {/* Decorative Background Elements */}
+      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#DBA314]/10 rounded-full blur-[150px] mix-blend-multiply pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-[#0089C1]/10 rounded-full blur-[150px] mix-blend-multiply pointer-events-none" />
+
+      <div className="container max-w-7xl px-6 mx-auto relative z-10">
+        <div className="flex flex-col lg:flex-row items-center gap-20">
           
           {/* Left Text Content */}
           <motion.div 
@@ -56,58 +60,64 @@ export default function FeatureSection() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
-            className="flex-1 space-y-6"
+            className="flex-1 space-y-8"
           >
-            <p className="text-sm text-theme-navy/60 font-medium tracking-wide">
-              {feature.badge}
-            </p>
+            <div className="inline-flex items-center space-x-3 px-5 py-2.5 rounded-full bg-white/80 backdrop-blur-sm border border-slate-200/50 shadow-sm">
+              <div className="w-2 h-2 rounded-full bg-[#0089C1] animate-pulse" />
+              <span className="text-xs text-[#1B2642] font-bold tracking-[0.2em] uppercase">
+                {feature.badge}
+              </span>
+            </div>
 
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-theme-navy tracking-tight leading-[1.2]">
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-black text-[#1B2642] tracking-tight leading-[1.1]">
               {feature.title.includes('Creativity') ? (
                 <>
-                  <span className="text-sky-500 font-bold">Creativity</span> {feature.title.replace('Creativity', '').trim()}
+                  <span className="text-gradient">Creativity</span> {feature.title.replace('Creativity', '').trim()}
                 </>
               ) : (
                 feature.title
               )}
             </h2>
 
-            <p className="text-theme-navy/60 text-base md:text-lg font-light leading-relaxed max-w-lg">
-              {feature.description}
-            </p>
+            <div className="relative">
+              <div className="absolute -left-6 top-0 bottom-0 w-1 bg-gradient-to-b from-[#DBA314] to-transparent rounded-full" />
+              <p className="text-[#1B2642]/80 text-lg md:text-xl font-light leading-relaxed max-w-xl pl-6">
+                {feature.description}
+              </p>
+            </div>
 
-            <div className="pt-4">
+            <div className="pt-6">
               <a 
                 href={feature.buttonLink || '#services'} 
-                className="inline-flex items-center px-8 py-3.5 rounded-full bg-sky-500 text-white font-medium hover:bg-sky-600 transition-all shadow-lg hover:shadow-xl hover:-translate-y-1 transform duration-300 group"
+                className="inline-flex items-center px-10 py-4 rounded-full bg-gradient-to-r from-[#1B2642] to-[#323D53] text-white font-medium hover:shadow-2xl hover:shadow-[#1B2642]/20 hover:-translate-y-1 transform transition-all duration-300 group"
               >
                 {feature.buttonText || 'Discover More'}
-                <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                <ArrowRight className="ml-3 w-5 h-5 group-hover:translate-x-2 transition-transform duration-300" />
               </a>
             </div>
           </motion.div>
 
           {/* Right Image/Illustration Content */}
           <motion.div 
-            initial={{ opacity: 0, x: 50 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, x: 50, rotate: -2 }}
+            whileInView={{ opacity: 1, x: 0, rotate: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
+            transition={{ duration: 1, type: "spring", bounce: 0.4 }}
             className="flex-1 w-full relative"
           >
             {/* Decorative background blob */}
-            <div className="absolute inset-0 bg-sky-100 rounded-[3rem] transform rotate-3 scale-105 -z-10" />
+            <div className="absolute inset-0 bg-gradient-to-tr from-[#0089C1]/20 to-[#DBA314]/20 rounded-[3rem] transform rotate-3 scale-105 -z-10 blur-xl" />
             
-            <div className="relative w-full aspect-[4/3] rounded-3xl overflow-hidden shadow-2xl bg-white border border-slate-100">
+            <div className="relative w-full aspect-[4/3] rounded-[3rem] overflow-hidden shadow-2xl glass-card ring-1 ring-white/50 group">
               <img
                 src={featureImg}
                 alt={feature.title}
-                className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
+                className="w-full h-full object-cover transition-transform duration-[2s] ease-out group-hover:scale-110"
                 onError={(e) => {
                   (e.target as HTMLImageElement).src = '/serviceimage/graphicmain1.jpg';
                 }}
               />
-              <div className="absolute inset-0 bg-gradient-to-tr from-theme-navy/40 to-transparent pointer-events-none" />
+              <div className="absolute inset-0 bg-gradient-to-tr from-[#1B2642]/40 to-transparent pointer-events-none opacity-50 group-hover:opacity-30 transition-opacity duration-700" />
             </div>
           </motion.div>
 

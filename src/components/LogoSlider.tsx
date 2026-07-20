@@ -1,11 +1,13 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Slider from "react-slick";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
 import apiService from "@/services/apiService";
 import endPointApi from "@/services/endPointApi";
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Navigation, Pagination, Autoplay } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
 
 const defaultLogos = [
     { src: "/logos/logo1.png", alt: "Company 1" },
@@ -48,66 +50,81 @@ export default function LogoSlider() {
         fetchPartners();
     }, []);
 
-    const settings = {
-        dots: false,
-        infinite: true,
-        slidesToShow: Math.min(5, Math.max(1, logos.length)),
-        slidesToScroll: 1,
-        autoplay: true,
-        speed: 3000,
-        autoplaySpeed: 0,
-        cssEase: "linear",
-        pauseOnHover: true,
-        responsive: [
-            {
-                breakpoint: 1024,
-                settings: {
-                    slidesToShow: Math.min(4, Math.max(1, logos.length)),
-                },
-            },
-            {
-                breakpoint: 768,
-                settings: {
-                    slidesToShow: Math.min(3, Math.max(1, logos.length)),
-                },
-            },
-            {
-                breakpoint: 480,
-                settings: {
-                    slidesToShow: Math.min(2, Math.max(1, logos.length)),
-                },
-            },
-        ],
+    const LogoCard = ({ logo }: { logo: any }) => (
+        <div className="px-3 outline-none h-full">
+            <div className="h-48 flex items-center justify-center p-4 rounded-xl bg-transparent border border-[#1b2642]/10 hover:border-[#ca8a04]/50 hover:bg-[#EFE7DE]/50 shadow-sm transition-all duration-500 group cursor-pointer overflow-hidden">
+                <div className="relative w-full h-full flex items-center justify-center">
+                    <img
+                        src={logo.src}
+                        alt={logo.alt}
+                        className="max-w-full max-h-full object-contain transition-all duration-500 group-hover:scale-110 p-2 opacity-80 group-hover:opacity-100 mix-blend-multiply"
+                        onError={(e) => {
+                            (e.target as HTMLImageElement).src = '/logos/logo1.png';
+                        }}
+                    />
+                </div>
+            </div>
+        </div>
+    );
+
+    const renderLogos = () => {
+        return (
+            <div className="relative logo-swiper px-2">
+                <style dangerouslySetInnerHTML={{__html: `
+                  .logo-swiper .swiper-wrapper {
+                    transition-timing-function: linear !important;
+                  }
+                  .logo-swiper .swiper-button-next,
+                  .logo-swiper .swiper-button-prev {
+                    color: #1b2642;
+                    background: #ffffff;
+                    width: 40px;
+                    height: 40px;
+                    border-radius: 50%;
+                    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+                  }
+                  .logo-swiper .swiper-button-next:after,
+                  .logo-swiper .swiper-button-prev:after {
+                    font-size: 16px;
+                    font-weight: bold;
+                  }
+                  .logo-swiper .swiper-button-next:hover,
+                  .logo-swiper .swiper-button-prev:hover {
+                    color: #ffffff;
+                    background: #ca8a04;
+                  }
+                `}} />
+                <Swiper
+                    modules={[Navigation, Autoplay]}
+                    spaceBetween={0}
+                    slidesPerView={1}
+                    loop={logos.length > 1}
+                    navigation={logos.length > 1}
+                    speed={3000}
+                    autoplay={logos.length > 1 ? { delay: 0, disableOnInteraction: false, reverseDirection: true } : false}
+                    breakpoints={{
+                        480: { slidesPerView: Math.min(2, logos.length) },
+                        768: { slidesPerView: Math.min(3, logos.length) },
+                        1024: { slidesPerView: Math.min(4, logos.length) },
+                        1280: { slidesPerView: Math.min(5, logos.length) },
+                    }}
+                    className="py-4"
+                >
+                    {logos.map((logo, index) => (
+                        <SwiperSlide key={index}>
+                            <LogoCard logo={logo} />
+                        </SwiperSlide>
+                    ))}
+                </Swiper>
+            </div>
+        );
     };
 
     return (
-        <div className="py-10 relative overflow-hidden">
-            <div className="w-full px-4 md:px-8">
-                <Slider {...settings} className="client-slider">
-                    {logos.map((logo, index) => (
-                        <div key={index} className="px-6 outline-none">
-                            <div className="h-48 flex items-center justify-center p-4 rounded-3xl bg-white border border-slate-100 hover:border-theme-navy/40 hover:bg-theme-cream shadow-lg transition-all duration-500 group cursor-pointer overflow-hidden">
-                                <div className="relative w-full h-full flex items-center justify-center">
-                                    <img
-                                        src={logo.src}
-                                        alt={logo.alt}
-                                        className="max-w-full max-h-full object-contain transition-all duration-500 group-hover:scale-110 p-2"
-                                        onError={(e) => {
-                                            (e.target as HTMLImageElement).src = '/logos/logo1.png';
-                                        }}
-                                    />
-                                </div>
-                            </div>
-                        </div>
-                    ))}
-                </Slider>
+        <div className="py-10 relative overflow-hidden bg-transparent">
+            <div className="w-full max-w-[1400px] mx-auto px-4 md:px-8">
+                {renderLogos()}
             </div>
-            <style jsx global>{`
-              .client-slider .slick-track {
-                display: flex !important;
-                align-items: center;
-              }
-            `}</style>
         </div>
     );
 }

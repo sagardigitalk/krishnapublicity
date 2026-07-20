@@ -29,7 +29,7 @@ export default function Services() {
   const router = useRouter();
 
   return (
-    <section id="services" className="py-24 bg-theme-cream w-full overflow-hidden">
+    <section id="services" className="py-24 bg-[#F8F5F0] w-full overflow-hidden">
       <div className="w-full px-6 lg:px-16 mx-auto">
 
         {/* Header Section */}

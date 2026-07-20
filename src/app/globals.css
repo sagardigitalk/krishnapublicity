@@ -74,7 +74,7 @@
     scroll-behavior: smooth;
   }
   body {
-    @apply bg-background text-foreground font-sans antialiased selection:bg-primary selection:text-white;
+    @apply bg-background text-foreground font-sans antialiased selection:bg-[#323D53] selection:text-white;
   }
   
   /* Custom Scrollbar */

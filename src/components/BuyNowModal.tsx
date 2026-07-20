@@ -35,7 +35,12 @@ const BuyNowModal: React.FC<BuyNowModalProps> = ({ isOpen, onClose, onSubmit }) 
     const newErrors: { [key: string]: string } = {};
     if (!formData.name) newErrors.name = "Name is required";
     if (!formData.contactNumber) newErrors.contactNumber = "Contact Number is required";
-    if (!formData.email) newErrors.email = "Email is required";
+    const emailRegex = /^[A-Z0-9._%+-]+@(?!.*(.)\1{3,})[A-Z0-9-]+(\.[A-Z0-9-]+)*\.[A-Z]{2,}$/i;
+    if (!formData.email) {
+      newErrors.email = "Email is required";
+    } else if (!emailRegex.test(formData.email)) {
+      newErrors.email = "Invalid email format";
+    }
     if (!formData.productQuantity) newErrors.productQuantity = "Product Quantity is required";
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
