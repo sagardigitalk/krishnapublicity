@@ -40,8 +40,7 @@ export default function FileUpload({
 
     try {
       const imagePath = await apiService.uploadFile(file);
-      const fullUrl = apiService.getImageUrl(imagePath);
-      onChange(fullUrl);
+      onChange(imagePath);
       toast.success('Image uploaded successfully!', { id: toastId });
     } catch (error: any) {
       console.error('Upload error:', error);
@@ -114,7 +113,7 @@ export default function FileUpload({
         <div className="relative group rounded-2xl border border-gray-200/80 bg-white p-3 shadow-sm hover:shadow-md transition-all duration-300">
           <div className="relative h-48 w-full rounded-xl overflow-hidden bg-gray-100 border border-gray-100 flex items-center justify-center">
             <img
-              src={value}
+              src={apiService.getImageUrl(value)}
               alt="Uploaded Preview"
               className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
             />
@@ -122,7 +121,7 @@ export default function FileUpload({
             {/* Hover Actions Overlay */}
             <div className="absolute inset-0 bg-[#1B2642]/60 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-3">
               <a
-                href={value}
+                href={apiService.getImageUrl(value)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-2.5 bg-white/90 text-[#1B2642] rounded-xl hover:bg-white transition-transform hover:scale-110 shadow-lg text-xs font-bold flex items-center gap-1.5"

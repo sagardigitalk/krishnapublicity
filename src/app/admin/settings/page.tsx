@@ -23,6 +23,23 @@ export default function AdminSettings() {
       instagram: 'https://instagram.com/krishnapublicity_surat',
       facebook: 'https://www.facebook.com/krishna.pubgps',
       twitter: 'https://twitter.com/Mrsanju_krishna'
+    },
+    servicesCards: {
+      hoardings: {
+        title: 'OUTDOOR HOARDINGS',
+        description: 'High-impact premium billboard displays positioned in strategic, high-traffic prime locations.',
+        image: '/serviceimage/hordingimage.jpg'
+      },
+      branding: {
+        title: 'BRAND IDENTITY',
+        description: 'Distinctive logo design, complete branding suites, and brand guidelines that define your presence.',
+        image: '/serviceimage/brandingmian.jpg'
+      },
+      graphics: {
+        title: 'CREATIVE DESIGN',
+        description: 'State-of-the-art graphic illustrations, promotional ads, and immersive visual campaigns.',
+        image: '/serviceimage/graphicmain1.jpg'
+      }
     }
   });
 
@@ -40,6 +57,10 @@ export default function AdminSettings() {
           socialLinks: {
             ...prev.socialLinks,
             ...(data.socialLinks || {})
+          },
+          servicesCards: {
+            ...prev.servicesCards,
+            ...(data.servicesCards || {})
           }
         }));
       }
@@ -64,6 +85,19 @@ export default function AdminSettings() {
       socialLinks: {
         ...prev.socialLinks,
         [field]: value
+      }
+    }));
+  };
+
+  const handleServiceCardChange = (serviceKey: 'hoardings' | 'branding' | 'graphics', field: string, value: string) => {
+    setSettings(prev => ({
+      ...prev,
+      servicesCards: {
+        ...prev.servicesCards,
+        [serviceKey]: {
+          ...prev.servicesCards[serviceKey],
+          [field]: value
+        }
       }
     }));
   };
@@ -273,6 +307,117 @@ export default function AdminSettings() {
                   placeholder="https://twitter.com/..."
                 />
               </div>
+            </div>
+          </div>
+
+          {/* Homepage Service Cards */}
+          <div className="bg-white p-8 rounded-3xl shadow-[0_4px_24px_rgba(27,38,66,0.04)] border border-gray-100/50">
+            <div className="flex items-center gap-4 mb-8 pb-6 border-b border-gray-50">
+              <div className="w-12 h-12 rounded-2xl bg-gray-50 flex items-center justify-center text-gray-400">
+                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
+                </svg>
+              </div>
+              <div>
+                <h2 className="text-xl font-bold text-[#1B2642]">Homepage Service Cards</h2>
+                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1">Manage 3 core services on homepage</p>
+              </div>
+            </div>
+
+            <div className="space-y-12">
+              {/* Hoardings Card */}
+              <div className="space-y-6">
+                <h3 className="text-lg font-bold text-[#1B2642] border-b pb-2">1. Outdoor Hoardings Card</h3>
+                <FileUpload
+                  label="Hoardings Image"
+                  value={settings.servicesCards?.hoardings?.image || ''}
+                  onChange={(url) => handleServiceCardChange('hoardings', 'image', url)}
+                  helperText="Recommended size: 800x600px"
+                />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-[10px] font-bold text-gray-400 mb-2 uppercase tracking-wider">Title</label>
+                    <input
+                      type="text"
+                      value={settings.servicesCards?.hoardings?.title || ''}
+                      onChange={(e) => handleServiceCardChange('hoardings', 'title', e.target.value)}
+                      className="w-full border border-gray-200 bg-white rounded-xl p-3.5 text-sm font-medium focus:border-[#1B2642] focus:ring-1 focus:ring-[#1B2642] text-[#1B2642]"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-bold text-gray-400 mb-2 uppercase tracking-wider">Description</label>
+                    <input
+                      type="text"
+                      value={settings.servicesCards?.hoardings?.description || ''}
+                      onChange={(e) => handleServiceCardChange('hoardings', 'description', e.target.value)}
+                      className="w-full border border-gray-200 bg-white rounded-xl p-3.5 text-sm font-medium focus:border-[#1B2642] focus:ring-1 focus:ring-[#1B2642] text-[#1B2642]"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Branding Card */}
+              <div className="space-y-6">
+                <h3 className="text-lg font-bold text-[#1B2642] border-b pb-2">2. Brand Identity Card</h3>
+                <FileUpload
+                  label="Branding Image"
+                  value={settings.servicesCards?.branding?.image || ''}
+                  onChange={(url) => handleServiceCardChange('branding', 'image', url)}
+                  helperText="Recommended size: 800x600px"
+                />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-[10px] font-bold text-gray-400 mb-2 uppercase tracking-wider">Title</label>
+                    <input
+                      type="text"
+                      value={settings.servicesCards?.branding?.title || ''}
+                      onChange={(e) => handleServiceCardChange('branding', 'title', e.target.value)}
+                      className="w-full border border-gray-200 bg-white rounded-xl p-3.5 text-sm font-medium focus:border-[#1B2642] focus:ring-1 focus:ring-[#1B2642] text-[#1B2642]"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-bold text-gray-400 mb-2 uppercase tracking-wider">Description</label>
+                    <input
+                      type="text"
+                      value={settings.servicesCards?.branding?.description || ''}
+                      onChange={(e) => handleServiceCardChange('branding', 'description', e.target.value)}
+                      className="w-full border border-gray-200 bg-white rounded-xl p-3.5 text-sm font-medium focus:border-[#1B2642] focus:ring-1 focus:ring-[#1B2642] text-[#1B2642]"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Graphics Card */}
+              <div className="space-y-6">
+                <h3 className="text-lg font-bold text-[#1B2642] border-b pb-2">3. Creative Design Card</h3>
+                <FileUpload
+                  label="Graphics Image"
+                  value={settings.servicesCards?.graphics?.image || ''}
+                  onChange={(url) => handleServiceCardChange('graphics', 'image', url)}
+                  helperText="Recommended size: 800x600px"
+                />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-[10px] font-bold text-gray-400 mb-2 uppercase tracking-wider">Title</label>
+                    <input
+                      type="text"
+                      value={settings.servicesCards?.graphics?.title || ''}
+                      onChange={(e) => handleServiceCardChange('graphics', 'title', e.target.value)}
+                      className="w-full border border-gray-200 bg-white rounded-xl p-3.5 text-sm font-medium focus:border-[#1B2642] focus:ring-1 focus:ring-[#1B2642] text-[#1B2642]"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-bold text-gray-400 mb-2 uppercase tracking-wider">Description</label>
+                    <input
+                      type="text"
+                      value={settings.servicesCards?.graphics?.description || ''}
+                      onChange={(e) => handleServiceCardChange('graphics', 'description', e.target.value)}
+                      className="w-full border border-gray-200 bg-white rounded-xl p-3.5 text-sm font-medium focus:border-[#1B2642] focus:ring-1 focus:ring-[#1B2642] text-[#1B2642]"
+                    />
+                  </div>
+                </div>
+              </div>
+
             </div>
           </div>
 
