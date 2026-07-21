@@ -4,13 +4,14 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Search, ArrowRight, ArrowLeft } from 'lucide-react';
+import { Search, ArrowLeft } from 'lucide-react';
 import Navbar from "@/app/Navbar/page";
 import Footer from "@/app/Footer/page";
 import apiService from "@/services/apiService";
 import endPointApi from "@/services/endPointApi";
+import PageTransition from "@/components/PageTransition";
+import InteractiveCard from "@/components/InteractiveCard";
 
 interface CityType {
   cityId: string;
@@ -42,7 +43,6 @@ const fallbackCities: CityType[] = [
 
 export default function HoardingsPage() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [hoveredCity, setHoveredCity] = useState<string | null>(null);
   const [cities, setCities] = useState<CityType[]>(fallbackCities);
 
   useEffect(() => {
@@ -69,137 +69,108 @@ export default function HoardingsPage() {
     <div className="bg-theme-cream min-h-screen">
       <Navbar />
 
-      <section className="pt-36 pb-24 lg:pt-40 lg:pb-32 relative overflow-hidden">
+      <PageTransition className="pt-36 pb-24 lg:pt-40 lg:pb-32 relative overflow-hidden">
         <div className="container mx-auto px-6 relative z-10 max-w-7xl">
           <Link href="/#services">
             <Button
               variant="outline"
-              className="mb-12 bg-white border-theme-navy/10 text-theme-navy hover:bg-theme-navy hover:text-white transition-all duration-300 rounded-xl"
+              className="mb-12 bg-white border-theme-navy/10 text-theme-navy hover:bg-theme-navy hover:text-white transition-all duration-300 rounded-xl group"
             >
-              <ArrowLeft className="mr-2 h-4 w-4" /> Back to Services
+              <ArrowLeft className="mr-2 h-4 w-4 transition-transform group-hover:-translate-x-1" /> Back to Services
             </Button>
           </Link>
           
           <motion.div
             className="text-center mb-16"
-            initial={{ opacity: 0, y: -20 }}
+            initial={{ opacity: 0, y: -30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
           >
-            <div className="inline-flex items-center space-x-2 px-4 py-2 rounded-full border border-theme-navy/10 text-theme-navy mb-6">
+            <motion.div 
+              className="inline-flex items-center space-x-2 px-4 py-2 rounded-full border border-theme-navy/10 text-theme-navy mb-6 bg-white/50 backdrop-blur-sm"
+              whileHover={{ scale: 1.05 }}
+            >
               <span className="text-[10px] font-bold tracking-[0.3em] uppercase">Prime Locations</span>
-            </div>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-theme-navy tracking-tight mb-6">
-              Hoarding <span className="text-theme-navy">Networks</span>
+            </motion.div>
+            <h1 className="text-4xl md:text-5xl lg:text-7xl font-black text-theme-navy tracking-tight mb-6 leading-tight">
+              Hoarding <span className="text-transparent bg-clip-text bg-gradient-to-r from-theme-navy to-blue-600">Networks</span>
             </h1>
             <p className="text-lg text-theme-navy/70 max-w-2xl mx-auto leading-relaxed font-light">
               Explore our extensive hoarding network across major cities in Gujarat to maximize your brand&apos;s reach and impact.
             </p>
           </motion.div>
 
-          <div className="mb-16">
-            <div className="flex justify-center">
-              <div className="relative w-full md:w-96">
-                <Input
-                  type="text"
-                  placeholder="Search cities..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-12 h-14 bg-white border-theme-navy/10 text-theme-navy rounded-2xl focus:ring-theme-navy shadow-sm"
-                />
-                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-theme-navy/40 w-5 h-5" />
-              </div>
+          <motion.div 
+            className="mb-16 flex justify-center"
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.2, duration: 0.5 }}
+          >
+            <div className="relative w-full md:w-[28rem] group">
+              <div className="absolute inset-0 bg-theme-navy/5 rounded-2xl blur-xl group-hover:bg-theme-navy/10 transition-colors duration-500" />
+              <Input
+                type="text"
+                placeholder="Search cities..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="relative pl-12 h-14 bg-white/80 backdrop-blur-xl border-theme-navy/10 text-theme-navy rounded-2xl focus:ring-2 focus:ring-theme-navy/20 shadow-sm transition-all duration-300"
+              />
+              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-theme-navy/40 w-5 h-5 transition-colors group-hover:text-theme-navy" />
             </div>
-          </div>
+          </motion.div>
 
-          <AnimatePresence>
+          <AnimatePresence mode="wait">
             <motion.div
-              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+              key={searchTerm}
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 perspective-1000"
               initial="hidden"
               animate="visible"
+              exit="hidden"
               variants={{
-                visible: { transition: { staggerChildren: 0.1 } },
+                hidden: { opacity: 0 },
+                visible: {
+                  opacity: 1,
+                  transition: { staggerChildren: 0.1 },
+                },
               }}
             >
               {filteredCities.map((city) => (
-                <motion.div
+                <InteractiveCard
                   key={city.cityId}
-                  variants={{
-                    hidden: { opacity: 0, y: 30 },
-                    visible: { opacity: 1, y: 0 },
-                  }}
-                  whileHover={{ y: -10 }}
-                  className="group h-full"
-                >
-                  <Link href={`/services/hoardings/${city.cityId}`} className="block h-full">
-                    <motion.div 
-                      className="h-full bg-white border border-theme-navy/10 rounded-[2rem] flex flex-col justify-between overflow-hidden shadow-sm transition-all duration-500 group-hover:border-theme-navy/30 group-hover:shadow-xl"
-                      whileHover={{ scale: 1.02, y: -5 }}
-                      transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                    >
-                      <CardContent className="p-0 flex flex-col h-full">
-                        <div
-                          className="relative h-64 w-full overflow-hidden"
-                          onMouseEnter={() => setHoveredCity(city.cityId)}
-                          onMouseLeave={() => setHoveredCity(null)}
-                        >
-                          <img
-                            src={apiService.getImageUrl(city.cityImage, '/hordingimage/bhavnagar1.jpg')}
-                            alt={city.cityName}
-                            className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
-                          />
-                          
-                          <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/20 to-transparent opacity-80 group-hover:opacity-90 transition-opacity duration-500" />
-                          
-                          <div className="absolute bottom-6 left-6 right-6">
-                            <h3 className="text-2xl font-bold text-white mb-2">{city.cityName}</h3>
-                          </div>
-
-                          <AnimatePresence>
-                            {hoveredCity === city.cityId && (
-                              <motion.div
-                                className="absolute inset-0 bg-theme-navy/20 backdrop-blur-[2px] flex items-center justify-center z-20"
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                exit={{ opacity: 0 }}
-                                transition={{ duration: 0.3 }}
-                              >
-                                <motion.div 
-                                  className="w-14 h-14 rounded-full bg-white flex items-center justify-center shadow-2xl"
-                                  initial={{ scale: 0.5, opacity: 0 }}
-                                  animate={{ scale: 1, opacity: 1 }}
-                                  exit={{ scale: 0.5, opacity: 0 }}
-                                  transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                                >
-                                  <ArrowRight className="text-theme-navy w-6 h-6" />
-                                </motion.div>
-                              </motion.div>
-                            )}
-                          </AnimatePresence>
-                        </div>
-                        
-                        <div className="p-6 bg-slate-50 flex-grow border-t border-slate-100">
-                          <p className="text-theme-navy/70 text-sm leading-relaxed line-clamp-3">
-                            {city.cityDescription}
-                          </p>
-                        </div>
-                      </CardContent>
-                    </motion.div>
-                  </Link>
-                </motion.div>
+                  title={city.cityName}
+                  description={city.cityDescription}
+                  image={city.cityImage}
+                  fallbackImage="/hordingimage/bhavnagar1.jpg"
+                  href={`/services/hoardings/${city.cityId}`}
+                />
               ))}
             </motion.div>
           </AnimatePresence>
 
-          <div className="flex justify-center mt-16">
+          {filteredCities.length === 0 && (
+            <motion.div 
+              initial={{ opacity: 0 }} 
+              animate={{ opacity: 1 }} 
+              className="text-center py-20 text-theme-navy/50"
+            >
+              No cities found matching your search.
+            </motion.div>
+          )}
+
+          <motion.div 
+            className="flex justify-center mt-20"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+          >
             <Link href="/services/hoardings/all">
-              <Button className="h-12 px-8 rounded-xl bg-theme-navy hover:bg-theme-navy/90 text-white font-semibold shadow-lg hover:shadow-theme-navy/25 transition-all duration-300">
+              <Button className="h-14 px-10 rounded-2xl bg-theme-navy hover:bg-theme-navy/90 text-white font-bold tracking-wide shadow-xl hover:shadow-theme-navy/30 transition-all duration-300 hover:-translate-y-1">
                 View All Hoardings
               </Button>
             </Link>
-          </div>
+          </motion.div>
         </div>
-      </section>
+      </PageTransition>
 
       <Footer />
     </div>
