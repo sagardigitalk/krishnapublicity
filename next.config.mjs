@@ -14,8 +14,11 @@ const nextConfig = {
       {
         protocol: 'https',
         hostname: 'krishnapublicity-backend.onrender.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'res.cloudinary.com',
       }
-
     ],
   },
 };
