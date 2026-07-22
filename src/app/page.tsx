@@ -24,7 +24,7 @@ export default function Home() {
     <div>
       {/* Interactive Global Scroll Progress Bar */}
       <motion.div
-        className="fixed top-0 left-0 right-0 h-1.5 bg-theme-navy origin-left z-[100]"
+        className="fixed top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-blue-500 to-cyan-400 origin-left z-[100]"
         style={{ scaleX }}
       />
       

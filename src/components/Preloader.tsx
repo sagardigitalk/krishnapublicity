@@ -10,7 +10,7 @@ export default function Preloader() {
     // Hide the loader after a short delay
     const timer = setTimeout(() => {
       setIsLoading(false);
-    }, 800); 
+    }, 2000); 
 
     // Prevent scrolling while loading
     document.body.style.overflow = "hidden";

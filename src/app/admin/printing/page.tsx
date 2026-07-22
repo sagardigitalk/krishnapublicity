@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { Plus, Trash2, Edit } from 'lucide-react';
+import { Plus, Trash2, Edit, Download } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import apiService from '@/services/apiService';
 import endPointApi from '@/services/endPointApi';
@@ -17,6 +17,7 @@ export default function PrintingPage() {
   const [pageSize, setPageSize] = useState(10);
   const [totalPages, setTotalPages] = useState(0);
   const [totalRecords, setTotalRecords] = useState(0);
+  const [summary, setSummary] = useState({ totalAmount: 0 });
 
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -40,6 +41,7 @@ export default function PrintingPage() {
         setEntries(data.data);
         setTotalPages(data.totalPages);
         setTotalRecords(data.totalRecords);
+        setSummary({ totalAmount: data.totalAmount || 0 });
       } else if (Array.isArray(data)) { // fallback
         setEntries(data);
       }
@@ -70,6 +72,14 @@ export default function PrintingPage() {
     }
   };
 
+  const handleDownloadReport = () => {
+    let url = `${endPointApi.serverUrl}/api/${endPointApi.printingReportPdf}`;
+    if (dateValue.startDate && dateValue.endDate) {
+      url += `?startDate=${dateValue.startDate}&endDate=${dateValue.endDate}`;
+    }
+    window.open(url, '_blank');
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -77,9 +87,21 @@ export default function PrintingPage() {
           <h2 className="text-2xl font-bold text-[#1B2642]">પ્રિન્ટીંગ (Printing)</h2>
           <p className="text-sm text-gray-500 mt-1">પ્રિન્ટીંગની વિગતો જુઓ અને મેનેજ કરો</p>
         </div>
-        <Link href="/admin/printing/add" className="px-6 py-2 bg-[#1B2642] text-white rounded-xl hover:bg-[#1B2642]/90 flex items-center gap-2">
-          <Plus className="w-4 h-4" /> નવી એન્ટ્રી (New Entry)
-        </Link>
+        <div className="flex gap-2">
+          <button onClick={handleDownloadReport} className="px-4 py-1.5 text-sm bg-green-600 text-white rounded-lg hover:bg-green-700 flex items-center gap-1.5 transition-colors">
+            <Download className="w-4 h-4" /> PDF રિપોર્ટ (Download)
+          </button>
+          <Link href="/admin/printing/add" className="px-4 py-1.5 text-sm bg-[#1B2642] text-white rounded-lg hover:bg-[#1B2642]/90 flex items-center gap-1.5">
+            <Plus className="w-4 h-4" /> નવી એન્ટ્રી (New Entry)
+          </Link>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+        <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col justify-center">
+          <p className="text-gray-500 text-xs font-medium mb-0.5">કુલ રકમ (Total Amount)</p>
+          <h3 className="text-2xl font-bold text-[#1B2642]">₹{summary.totalAmount}</h3>
+        </div>
       </div>
 
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col h-full">
@@ -100,6 +122,7 @@ export default function PrintingPage() {
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-gray-50 text-gray-500 text-sm border-b border-gray-100 whitespace-nowrap">
+                <th className="px-6 py-2.5 font-medium">વાઉચર નં</th>
                 <th className="px-6 py-2.5 font-medium">પ્રેસનું નામ</th>
                 <th className="px-6 py-2.5 font-medium">વિગત</th>
                 <th className="px-6 py-2.5 font-medium">રકમ</th>
@@ -118,10 +141,14 @@ export default function PrintingPage() {
               ) : (
                 entries.map(entry => (
                   <tr key={entry._id} className="hover:bg-gray-50/50">
+                    <td className="px-6 py-2.5 text-gray-600 font-medium">{entry.billNumber || '-'}</td>
                     <td className="px-6 py-2.5 font-medium text-[#1B2642]">{entry.pressName}</td>
                     <td className="px-6 py-2.5 text-gray-600 max-w-[300px] truncate">{entry.details}</td>
                     <td className="px-6 py-2.5 text-gray-600 font-bold">₹{entry.amount || 0}</td>
                     <td className="px-6 py-2.5 flex items-center gap-2">
+                      <a href={`${endPointApi.serverUrl}/api/${endPointApi.printingBillPdf(entry._id)}`} target="_blank" rel="noreferrer" className="text-green-600 hover:text-green-800 p-2 hover:bg-green-50 rounded-lg transition-colors" title="Download Voucher">
+                        <Download className="w-4 h-4" />
+                      </a>
                       <Link href={`/admin/printing/edit/${entry._id}`} className="text-blue-500 hover:text-blue-700 p-2 hover:bg-blue-50 rounded-lg transition-colors">
                         <Edit className="w-4 h-4" />
                       </Link>

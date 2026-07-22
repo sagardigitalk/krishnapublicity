@@ -23,8 +23,14 @@ export interface EndPointApi {
 
   // Accounting
   income: string;
+  incomeReportPdf: string;
+  incomeBillPdf: (id: string) => string;
   expense: string;
+  expenseReportPdf: string;
+  expenseBillPdf: (id: string) => string;
   printing: string;
+  printingReportPdf: string;
+  printingBillPdf: (id: string) => string;
 }
 
 const endPointApi: EndPointApi = {
@@ -51,8 +57,14 @@ const endPointApi: EndPointApi = {
 
   // Accounting
   income: 'income',
+  incomeReportPdf: 'income/pdf/report',
+  incomeBillPdf: (id: string) => `income/pdf/bill/${id}`,
   expense: 'expense',
+  expenseReportPdf: 'expense/pdf/report',
+  expenseBillPdf: (id: string) => `expense/pdf/bill/${id}`,
   printing: 'printing',
+  printingReportPdf: 'printing/pdf/report',
+  printingBillPdf: (id: string) => `printing/pdf/bill/${id}`,
 };
 
 export default endPointApi;

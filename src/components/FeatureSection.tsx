@@ -102,10 +102,9 @@ export default function FeatureSection() {
             transition={{ duration: 1, type: "spring", bounce: 0.4 }}
             className="flex-1 w-full relative"
           >
-            {/* Decorative background blob */}
-            <div className="absolute inset-0 bg-gradient-to-tr from-[#1B2642]/20 to-[#1B2642]/20 rounded-[3rem] transform rotate-3 scale-105 -z-10 blur-xl" />
+            {/* Elegant premium shadow instead of blocky offset or ugly blur */}
             
-            <div className="relative w-full aspect-[4/3] rounded-[3rem] overflow-hidden shadow-2xl glass-card ring-1 ring-white/50 group">
+            <div className="relative w-full aspect-[4/3] rounded-[3rem] overflow-hidden shadow-[0_30px_60px_-15px_rgba(27,38,66,0.6)] ring-4 ring-white/80 group transform hover:-translate-y-2 transition-all duration-500">
               <img
                 src={featureImg}
                 alt={feature.title}

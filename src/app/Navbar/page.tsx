@@ -72,18 +72,17 @@ export default function Navbar() {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 flex flex-col">
       {/* Top promotional bar */}
-      <div className="bg-theme-navy text-white text-[10px] md:text-xs font-semibold tracking-[0.2em] uppercase py-2 flex justify-center items-center text-center px-4">
+      <div className={`transition-colors duration-500 text-[10px] md:text-xs font-semibold tracking-[0.2em] uppercase py-2 flex justify-center items-center text-center px-4 ${scrolled ? 'bg-theme-navy text-[#F8F5F0]' : 'bg-[#F8F5F0] text-theme-navy'}`}>
         Premium Outdoor Advertising — Contact us today for exclusive rates
       </div>
 
       <nav
-        className={`w-full transition-all duration-500 ${
-          scrolled ? "bg-theme-cream shadow-md py-3" : "bg-black/20 backdrop-blur-md py-4 md:py-6"
-        }`}
+        className={`w-full transition-all duration-500 ${scrolled ? "bg-[#F8F5F0] shadow-md py-3" : "bg-theme-navy shadow-lg py-4 md:py-6"
+          }`}
       >
         <div className="w-full px-6 lg:px-16">
           <div className="flex justify-between items-center relative">
-            
+
             {/* Logo */}
             <motion.div whileHover={{ scale: 1.02 }} className="flex items-center cursor-pointer z-10">
               <ScrollLink to="home" smooth={true} duration={800}>
@@ -92,7 +91,7 @@ export default function Navbar() {
                 ) : (
                   <span className={`font-extrabold text-2xl md:text-3xl tracking-tighter flex items-center gap-1 transition-colors duration-500 ${scrolled ? 'text-theme-navy' : 'text-white'}`}>
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className={`mr-1 transition-colors duration-500 ${scrolled ? 'text-theme-navy' : 'text-white'}`}>
-                       <path d="M6 3V21M6 12C6 12 10 10 14 10C18 10 20 12 20 16C20 20 18 22 14 22C10 22 6 20 6 20" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                      <path d="M6 3V21M6 12C6 12 10 10 14 10C18 10 20 12 20 16C20 20 18 22 14 22C10 22 6 20 6 20" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
                     {siteSettings.brandName || 'KRISHNA.'}
                   </span>
@@ -111,11 +110,10 @@ export default function Navbar() {
                       duration={800}
                       className="relative cursor-pointer group py-1 block px-2"
                     >
-                      <span className={`relative z-10 text-xs font-bold tracking-widest uppercase transition-colors duration-500 ${
-                        activeSection === section 
-                          ? (scrolled ? "text-theme-navy" : "text-white") 
+                      <span className={`relative z-10 text-xs font-bold tracking-widest uppercase transition-colors duration-500 ${activeSection === section
+                          ? (scrolled ? "text-theme-navy" : "text-white")
                           : (scrolled ? "text-theme-navy/60 group-hover:text-theme-navy" : "text-white/70 group-hover:text-white")
-                      }`}>
+                        }`}>
                         {label}
                       </span>
                       {activeSection === section && (
@@ -130,7 +128,7 @@ export default function Navbar() {
                 ))}
               </div>
             </div>
-            
+
             {/* Desktop Right Action Area */}
             <div className="hidden md:flex items-center space-x-6 z-10">
               {/* Removed Let's Talk button */}
@@ -140,9 +138,8 @@ export default function Navbar() {
             <div className="md:hidden flex items-center z-10">
               <button
                 onClick={() => setIsOpen(!isOpen)}
-                className={`p-2 rounded-full transition-colors duration-500 ${
-                  scrolled ? "text-theme-navy hover:bg-theme-navy/5" : "text-white hover:bg-white/10"
-                }`}
+                className={`p-2 rounded-full transition-colors duration-500 ${scrolled ? "text-theme-navy hover:bg-theme-navy/5" : "text-white hover:bg-white/10"
+                  }`}
               >
                 <AnimatePresence mode="wait">
                   {isOpen ? (
@@ -178,9 +175,8 @@ export default function Navbar() {
                   to={section}
                   smooth={true}
                   duration={800}
-                  className={`block py-2 text-sm font-bold tracking-widest uppercase transition-all ${
-                    activeSection === section ? "text-theme-navy translate-x-2" : "text-theme-navy/60 hover:text-theme-navy hover:translate-x-2"
-                  }`}
+                  className={`block py-2 text-sm font-bold tracking-widest uppercase transition-all ${activeSection === section ? "text-theme-navy translate-x-2" : "text-theme-navy/60 hover:text-theme-navy hover:translate-x-2"
+                    }`}
                   onClick={() => {
                     setIsOpen(false)
                     setActiveSection(section)

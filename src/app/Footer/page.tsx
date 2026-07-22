@@ -154,7 +154,7 @@ const Footer = () => {
             transition={{ duration: 0.8 }}
             className="text-5xl md:text-7xl lg:text-[7rem] font-black tracking-tighter leading-tight whitespace-nowrap flex items-center justify-center gap-2 md:gap-4"
           >
-            <span className="text-transparent" style={{ WebkitTextStroke: '2px rgba(255,255,255,0.8)' }}>KRISHNA</span>
+            <span className="text-white">KRISHNA</span>
             <span className="text-white">PUBLICITY</span>
           </motion.h1>
         </div>

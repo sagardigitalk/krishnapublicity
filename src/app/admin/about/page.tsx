@@ -63,7 +63,7 @@ export default function AdminAbout() {
   const addTeamMember = () => {
     setAboutData({
       ...aboutData,
-      team: [...aboutData.team, { name: 'New Member', role: 'Role', image: '', bio: 'Short bio...' }]
+      team: [...aboutData.team, { name: 'New Member', image: '' }]
     });
     toast.success('New team member added');
   };
@@ -202,22 +202,13 @@ export default function AdminAbout() {
                     </button>
                   </div>
                   
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 gap-4">
                     <div>
                       <label className="block text-[10px] font-bold text-gray-400 mb-2 uppercase tracking-wider">Name</label>
                       <input 
                         type="text" 
                         value={member.name || ''} 
                         onChange={(e) => handleTeamChange(index, 'name', e.target.value)}
-                        className="w-full border border-gray-200 bg-white rounded-xl p-3.5 text-sm font-medium focus:border-[#1B2642] focus:ring-1 focus:ring-[#1B2642] text-[#1B2642]"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-[10px] font-bold text-gray-400 mb-2 uppercase tracking-wider">Role</label>
-                      <input 
-                        type="text" 
-                        value={member.role || ''} 
-                        onChange={(e) => handleTeamChange(index, 'role', e.target.value)}
                         className="w-full border border-gray-200 bg-white rounded-xl p-3.5 text-sm font-medium focus:border-[#1B2642] focus:ring-1 focus:ring-[#1B2642] text-[#1B2642]"
                       />
                     </div>
@@ -230,14 +221,6 @@ export default function AdminAbout() {
                     helperText="Profile photo (Square/Portrait recommended)"
                   />
 
-                  <div>
-                    <label className="block text-[10px] font-bold text-gray-400 mb-2 uppercase tracking-wider">Bio</label>
-                    <textarea 
-                      value={member.bio || ''} 
-                      onChange={(e) => handleTeamChange(index, 'bio', e.target.value)}
-                      className="w-full border border-gray-200 bg-white rounded-xl p-3.5 h-24 text-sm font-medium focus:border-[#1B2642] focus:ring-1 focus:ring-[#1B2642] text-[#1B2642]"
-                    />
-                  </div>
                 </div>
               ))}
               {(!aboutData.team || aboutData.team.length === 0) && (
